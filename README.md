@@ -1,6 +1,11 @@
 # Django BRfied
 
 
+python setup.py register -r pypi
+python setup.py sdist
+python setup.py sdist upload -r pypi
+
+
 # LICENSE
 
 The MIT License (MIT)
