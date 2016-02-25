@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from distutils.core import setup
 setup(
-    name='django_model_documentation',
+    name='django_brfied',
     packages=['django_brfied',
               'django_brfied.models'],
     version='1.0.0',
