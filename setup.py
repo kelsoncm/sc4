@@ -11,7 +11,7 @@ setup(
     author='Kelson da Costa Medeiros',
     author_email='kelsoncm@gmail.com',
     url='https://github.com/kelsoncm/django_brfied', 
-    download_url='https://github.com/kelsoncm/django_brfied/releases/tag/1.0.0',
+    download_url='https://github.com/kelsoncm/django_brfied/releases/tag/0.1.0',
     keywords=['django', 'BR', 'Brazil', 'Brasil', 'model', 'form', 'locale', ],
     classifiers=[]
 )
