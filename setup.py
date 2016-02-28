@@ -5,7 +5,7 @@ setup(
     packages=['django_brfied',
               'django_brfied.static.js',
               'python_brfied', ],
-    version='0.1.0',
+    version='0.1.1',
     description='Django Application specific brazilian fields types',
     author='Kelson da Costa Medeiros',
     author_email='kelsoncm@gmail.com',
