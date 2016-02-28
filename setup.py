@@ -3,8 +3,10 @@ from distutils.core import setup
 setup(
     name='django_brfied',
     packages=['django_brfied',
-              'django_brfied.models'],
-    version='1.0.0',
+              'django_brfied.static',
+              'django_brfied.static.js',
+              'python_brfied', ],
+    version='0.1.0',
     description='Django Application specific brazilian fields types',
     author='Kelson da Costa Medeiros',
     author_email='kelsoncm@gmail.com',

@@ -1,10 +1,10 @@
 # Django BRfied
 
+Why I create BRfied? Because localflavors dont validate user data and
+dont apply a mask on inputs.
 
-python setup.py register -r pypi
-python setup.py sdist
-python setup.py sdist upload -r pypi
-
+Thanks for http://digitalbush.com/projects/masked-input-plugin/ 
+jquery-maskedinput
 
 # LICENSE
 
