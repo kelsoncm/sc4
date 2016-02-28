@@ -3,7 +3,6 @@ from distutils.core import setup
 setup(
     name='django_brfied',
     packages=['django_brfied',
-              'django_brfied.static',
               'django_brfied.static.js',
               'python_brfied', ],
     version='0.1.0',
