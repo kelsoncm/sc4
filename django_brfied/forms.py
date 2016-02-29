@@ -31,6 +31,7 @@ from python_brfied import validate_dv_by_mask, only_digits, validate_mask, apply
 from python_brfied import CPF_MASK, CNPJ_MASK, CEP_MASK
 from python_brfied import ValidationException
 
+__all__ = ['MaskField', 'CPFField', 'CNPJField', 'CEPField', ]
 
 __author__ = 'Kelson da Costa Medeiros <kelsoncm@gmail.com>'
 
