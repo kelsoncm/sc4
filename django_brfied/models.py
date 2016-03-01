@@ -24,8 +24,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 from __future__ import unicode_literals
 from django.core.exceptions import ValidationError
 from django.db.models import Field, CharField
-from python_brfied import validate_dv_by_mask, only_digits, validate_mask, apply_mask, ValidationException
+from python_brfied import validate_dv_by_mask, validate_mask, validate_mod11, validate_cnpj
+from python_brfied import only_digits, apply_mask, ValidationException
 from python_brfied import CPF_MASK, CNPJ_MASK, CEP_MASK
+from . import forms
 
 __all__ = ['MaskField', 'CPFField', 'CNPJField', 'CEPField', ]
 
@@ -35,49 +37,82 @@ __author__ = 'Kelson da Costa Medeiros <kelsoncm@gmail.com>'
 class MaskField(CharField):
     description = "String with mask %(mask)"
 
-    def __init__(self, verbose_name, mask, mask_stored=False, *args, **kwargs):
-        validate_mask(mask)
-        self.mask_stored = mask_stored
-        self.mask = mask
+    def __init__(self, verbose_name='', mask='', mask_stored=False, *args, **kwargs):
+        self.mask, self.mask_stored = mask, mask_stored
+        self.validator = validate_mod11
         kwargs['max_length'] = len(mask) if mask_stored else len(only_digits(mask))
-        super(MaskField, self).__init__(*args, **kwargs)
+        validate_mask(self.mask)
+        super(MaskField, self).__init__(verbose_name, *args, **kwargs)
+
+    def deconstruct(self):
+        name, path, args, kwargs = super(MaskField, self).deconstruct()
+        if self.mask:
+            kwargs['mask'] = self.mask
+        if self.mask_stored:
+            kwargs['mask_stored'] = self.mask_stored
+        kwargs['max_length'] = len(self.mask) if self.mask_stored else len(only_digits(self.mask))
+        return name, path, args, kwargs
 
     def from_db_value(self, value, *args, **kwargs):
-        if value is None:
-            return value
-        return apply_mask(only_digits(value), self.mask)
+        try:
+            if value is None:
+                return value
+            return apply_mask(only_digits(value), self.mask)
+        except ValidationException as e:
+            raise ValidationError(e.message)
 
     def get_db_prep_value(self, value, connection, prepared=False):
-        print 'get_db_prep_value %s' % value
-        value = super(MaskField, self).get_db_prep_value(value, connection, prepared)
-        if value is None:
-            return None
-        return apply_mask(only_digits(value), self.mask) if self.mask_stored else only_digits(value)
+        try:
+            value = super(MaskField, self).get_db_prep_value(value, connection, prepared)
+            if value is None:
+                return None
+            return apply_mask(only_digits(value), self.mask) if self.mask_stored else only_digits(value)
+        except ValidationException as e:
+            raise ValidationError(e.message)
 
     def validate(self, value, model_instance):
         super(MaskField, self).validate(value, model_instance)
         try:
-            validate_dv_by_mask(value, self.mask)
+            validate_dv_by_mask(value, self.mask, validate_dv=self.validator)
         except ValidationException as e:
             raise ValidationError(e.message)
 
 
 class CPFField(MaskField):
-    description = "CPF field with mask_stored"
+    description = "CPF field"
 
-    def __init__(self, verbose_name='CPF', mask_stored=False, *args, **kwargs):
-        super(CPFField, self).__init__(verbose_name, CPF_MASK, mask_stored, *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        kwargs['mask'] = CPF_MASK
+        super(CPFField, self).__init__(*args, **kwargs)
+
+    def formfield(self, **kwargs):
+        defaults = kwargs.copy()
+        defaults['form_class'] = forms.CPFField
+        return super(CPFField, self).formfield(**defaults)
 
 
 class CNPJField(MaskField):
-    description = "CNPJ field with mask_stored = %(mask_stored)"
+    description = "CNPJ field"
 
-    def __init__(self, verbose_name='CNPJ', mask_stored=False, *args, **kwargs):
-        super(CNPJField, self).__init__(verbose_name, CNPJ_MASK, mask_stored, *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        kwargs['mask'] = CNPJ_MASK
+        super(CNPJField, self).__init__(*args, **kwargs)
+        self.validator = validate_cnpj
+
+    def formfield(self, **kwargs):
+        defaults = kwargs.copy()
+        defaults['form_class'] = forms.CNPJField
+        return super(CNPJField, self).formfield(**defaults)
 
 
 class CEPField(MaskField):
-    description = "CEP field with mask_stored = %(mask_stored)"
+    description = "CEP field"
 
-    def __init__(self, verbose_name='CEP', mask_stored=False, *args, **kwargs):
-        super(CEPField, self).__init__(verbose_name, CEP_MASK, mask_stored, *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        kwargs['mask'] = CEP_MASK
+        super(CEPField, self).__init__(*args, **kwargs)
+
+    def formfield(self, **kwargs):
+        defaults = kwargs.copy()
+        defaults['form_class'] = forms.CEPField
+        return super(CEPField, self).formfield(**defaults)

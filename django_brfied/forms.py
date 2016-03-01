@@ -27,7 +27,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 from __future__ import unicode_literals
 from django.forms import ValidationError
 from django.forms.fields import CharField
-from python_brfied import validate_dv_by_mask, only_digits, validate_mask, apply_mask
+from python_brfied import validate_dv_by_mask, validate_mask, validate_mod11, validate_cnpj
+from python_brfied import only_digits, apply_mask
 from python_brfied import CPF_MASK, CNPJ_MASK, CEP_MASK
 from python_brfied import ValidationException
 
@@ -54,10 +55,10 @@ class MaskField(CharField):
         self.mask_required = mask_required
         self.mask_forced = mask_forced
         self.mask = mask
-        max_length = len(mask)
-        min_length = len(mask) if mask_required or mask_forced else len(only_digits(mask))
-
-        super(MaskField, self).__init__(max_length, min_length, *args, **kwargs)
+        self.validator = validate_mod11
+        kwargs['max_length'] = len(mask)
+        kwargs['min_length'] = len(mask) if mask_required or mask_forced else len(only_digits(mask))
+        super(MaskField, self).__init__(*args, **kwargs)
 
     def clean(self, value):
         """
@@ -78,12 +79,12 @@ class MaskField(CharField):
 
     def clean_mask(self, value):
         if self.mask_required:
-            result = validate_dv_by_mask(only_digits(value), self.mask, False)
+            result = validate_dv_by_mask(only_digits(value), self.mask, False, validate_dv=self.validator)
             if result != value:
                 raise ValidationException('O campos tem que ser informado com máscara')
             return value
         else:
-            return validate_dv_by_mask(value, self.mask, self.mask_forced)
+            return validate_dv_by_mask(value, self.mask, self.mask_forced, validate_dv=self.validator)
 
     def widget_attrs(self, widget):
         attrs = super(MaskField, self).widget_attrs(widget)
@@ -109,6 +110,7 @@ class CNPJField(MaskField):
     """
     def __init__(self, mask_forced=True, mask_required=False, *args, **kwargs):
         super(CNPJField, self).__init__(CNPJ_MASK, mask_forced, mask_required, *args, **kwargs)
+        self.validator = validate_cnpj
 
 
 class CEPField(MaskField):

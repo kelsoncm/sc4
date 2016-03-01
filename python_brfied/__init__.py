@@ -31,7 +31,7 @@ __author__ = 'Kelson da Costa Medeiros <kelsoncm@gmail.com>'
 CPF_MASK = '999.999.999-00'
 CPF_RE = re.compile(r'^(\d{3})\.(\d{3})\.(\d{3})-(\d{2})$')
 
-CNPJ_MASK = '99.999.999.999/9999-00'
+CNPJ_MASK = '99.999.999/9999-00'
 CNPJ_RE = re.compile('^(\d{2})[.-]?(\d{3})[.-]?(\d{3})/(\d{4})-(\d{2})$')
 
 CEP_MASK = '99999-999'
@@ -41,9 +41,13 @@ PROCESSO_MASK = '9999999-99.9999.9.99.9999'
 PROCESSO_RE = re.compile('^(\d{7})-?(\d{2})\.?(\d{4})\.?(\d)\.?(\d{2})\.?(\d{4})$')
 
 
-
 class ValidationException(Exception):
     pass
+
+
+class EmptyMaskException(ValidationException):
+    def __init__(self):
+        super(MaskException, self).__init__('Nenhuma máscara informada')
 
 
 class MaskException(ValidationException):
@@ -114,7 +118,31 @@ def validate_mod11(unmasked_value, num_digits, num_dvs):
             raise DVException()
 
 
+def validate_cnpj(unmasked_value, *args, **kwargs):
+    def dv_maker(v):
+        if v >= 2:
+            return 11 - v
+        return 0
+    # super(CNPJField, self).validate(value, model_instance)
+    value = only_digits(unmasked_value)
+    if len(value) != 14:
+        raise ValidationException('O CNPJ deve ter exatamente 14 digitos')
+
+    orig_dv = value[-2:]
+    new_1dv = sum([i * int(value[idx]) for idx, i in enumerate(list(range(5, 1, -1)) + list(range(9, 1, -1)))])
+    new_1dv = dv_maker(new_1dv % 11)
+    value = value[:-2] + str(new_1dv) + value[-1]
+    new_2dv = sum([i * int(value[idx]) for idx, i in enumerate(list(range(6, 1, -1)) + list(range(9, 1, -1)))])
+    new_2dv = dv_maker(new_2dv % 11)
+    value = value[:-1] + str(new_2dv)
+    if value[-2:] != orig_dv:
+        raise ValidationException('O dígito verificador informado está inválido')
+
+
 def validate_mask(mask):
+    if mask is None or mask == '':
+        raise EmptyMaskException();
+
     unmask = only_digits(mask)
 
     if unmask.find('9') < 0:
@@ -127,12 +155,12 @@ def validate_mask(mask):
         raise MaskWithoutSpecialCharsException()
 
 
-def validate_dv_by_mask(value, mask, force=True, validata_dv=validate_mod11):
+def validate_dv_by_mask(value, mask, force=True, validate_dv=validate_mod11):
     validate_mask(mask)
     unmask = only_digits(mask)
     masked_value = validate_masked_value(value, mask, force)
     unmasked_value = only_digits(masked_value)
     num_dvs = len([x for x in unmask if x == '0'])
     num_digits = len(unmask)
-    validata_dv(unmasked_value, num_digits, num_dvs)
+    validate_dv(unmasked_value, num_digits, num_dvs)
     return masked_value
