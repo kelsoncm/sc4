@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 from __future__ import unicode_literals
 from django.core.exceptions import ValidationError
 from django.db.models import Field, CharField
-from python_brfied import validate_dv_by_mask, only_digits, validate_mask, apply_mask
+from python_brfied import validate_dv_by_mask, only_digits, validate_mask, apply_mask, ValidationException
 from python_brfied import CPF_MASK, CNPJ_MASK, CEP_MASK
 
 __all__ = ['MaskField', 'CPFField', 'CNPJField', 'CEPField', ]
@@ -35,47 +35,49 @@ __author__ = 'Kelson da Costa Medeiros <kelsoncm@gmail.com>'
 class MaskField(CharField):
     description = "String with mask %(mask)"
 
-    def __init__(self, mask, mask_stored=False, mask_forced=True, mask_required=False, *args, **kwargs):
-        if mask_forced and mask_required:
-            raise ValidationError('O argumento mask_forced não pode ser combinado com mask_required.')
-        if mask_stored and (not mask_forced or not mask_required):
-            raise ValidationError('Se o argumento mask_stored for True o mask_forced ou o mask_required também '
-                                  'deve ser True.')
+    def __init__(self, verbose_name, mask, mask_stored=False, *args, **kwargs):
         validate_mask(mask)
-
         self.mask_stored = mask_stored
-        self.mask_required = mask_required
-        self.mask_forced = mask_forced
         self.mask = mask
-        max_length = len(mask) if mask_stored else len(only_digits(mask))
-        min_length = max_length
-        super(MaskField, self).__init__(max_length, min_length, *args, **kwargs)
-    #
-    # def db_type(self, connection):
-    #     return 'varchar'
+        kwargs['max_length'] = len(mask) if mask_stored else len(only_digits(mask))
+        super(MaskField, self).__init__(*args, **kwargs)
 
-    def to_python(self, value, expression, connection, context):
+    def from_db_value(self, value, *args, **kwargs):
         if value is None:
             return value
-        return value if self.mask_forced else apply_mask(self.mask, value)
+        return apply_mask(only_digits(value), self.mask)
+
+    def get_db_prep_value(self, value, connection, prepared=False):
+        print 'get_db_prep_value %s' % value
+        value = super(MaskField, self).get_db_prep_value(value, connection, prepared)
+        if value is None:
+            return None
+        return apply_mask(only_digits(value), self.mask) if self.mask_stored else only_digits(value)
+
+    def validate(self, value, model_instance):
+        super(MaskField, self).validate(value, model_instance)
+        try:
+            validate_dv_by_mask(value, self.mask)
+        except ValidationException as e:
+            raise ValidationError(e.message)
 
 
-class CPFField(Field):
-    description = "CPF field with mask_stored = %(mask_stored)"
+class CPFField(MaskField):
+    description = "CPF field with mask_stored"
 
-    def __init__(self, mask_stored=False, mask_forced=True, mask_required=False, *args, **kwargs):
-        super(CPFField, self).__init__(CPF_MASK, mask_stored, mask_forced, mask_required, *args, **kwargs)
+    def __init__(self, verbose_name='CPF', mask_stored=False, *args, **kwargs):
+        super(CPFField, self).__init__(verbose_name, CPF_MASK, mask_stored, *args, **kwargs)
 
 
-class CNPJField(Field):
+class CNPJField(MaskField):
     description = "CNPJ field with mask_stored = %(mask_stored)"
 
-    def __init__(self, mask_stored=False, mask_forced=True, mask_required=False, *args, **kwargs):
-        super(CNPJField, self).__init__(CNPJ_MASK, mask_stored, mask_forced, mask_required, *args, **kwargs)
+    def __init__(self, verbose_name='CNPJ', mask_stored=False, *args, **kwargs):
+        super(CNPJField, self).__init__(verbose_name, CNPJ_MASK, mask_stored, *args, **kwargs)
 
 
-class CEPField(Field):
+class CEPField(MaskField):
     description = "CEP field with mask_stored = %(mask_stored)"
 
-    def __init__(self, mask_stored=False, mask_forced=True, mask_required=False, *args, **kwargs):
-        super(CEPField, self).__init__(CEP_MASK, mask_stored, mask_forced, mask_required, *args, **kwargs)
+    def __init__(self, verbose_name='CEP', mask_stored=False, *args, **kwargs):
+        super(CEPField, self).__init__(verbose_name, CEP_MASK, mask_stored, *args, **kwargs)

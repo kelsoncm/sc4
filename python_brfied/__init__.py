@@ -120,8 +120,8 @@ def validate_mask(mask):
     if unmask.find('9') < 0:
         raise MaskWithoutDigitsException()
 
-    if unmask.find('0') < 0:
-        raise MaskWithoutDVException()
+    # if unmask.find('0') < 0:
+    #     raise MaskWithoutDVException()
 
     if len(unmask) == len(mask):
         raise MaskWithoutSpecialCharsException()
