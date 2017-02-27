@@ -27,6 +27,14 @@ import re
 
 __author__ = 'Kelson da Costa Medeiros <kelsoncm@gmail.com>'
 
+UF_LIST = [("AC", "Acre"), ("AL", "Alagoas"), ("AP", "Amapá"), ("AM", "Amazonas"), ("BA", "Bahia"), ("CE", "Ceará"),
+           ("DF", "Distrito Federal"), ("ES", "Espírito Santo"), ("GO", "Goiás"), ("MA", "Maranhão"),
+           ("MT", "Mato Grosso"), ("MS", "Mato Grosso do Sul"), ("MG", "Minas Gerais"), ("PA", "Pará"),
+           ("PB", "Paraíba"), ("PR", "Paraná"), ("PE", "Pernambuco"), ("PI", "Piauí"), ("RJ", "Rio de Janeiro"),
+           ("RN", "Rio Grande do Norte"), ("RS", "Rio Grande do Sul"), ("RO", "Rondônia"), ("RR", "Roraima"),
+           ("SC", "Santa Catarina"), ("SP", "São Paulo"), ("SE", "Sergipe"), ("TO", "Tocantins")]
+UF_SIGLAS = [x[0] for x in UF_LIST]
+UF_NOMES = [x[1] for x in UF_LIST]
 
 CPF_MASK = '999.999.999-00'
 CPF_RE = re.compile(r'^(\d{3})\.(\d{3})\.(\d{3})-(\d{2})$')
@@ -164,3 +172,7 @@ def validate_dv_by_mask(value, mask, force=True, validate_dv=validate_mod11):
     num_digits = len(unmask)
     validate_dv(unmasked_value, num_digits, num_dvs)
     return masked_value
+
+
+def to_choice(*args):
+    return [(x, x) for x in args]

@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from __future__ import unicode_literals
 from django.core.exceptions import ValidationError
-from django.db.models import CharField, ForeignKey as OriginalForeignKey
+from django.db.models import CharField, ForeignKey as OriginalForeignKey, ManyToManyField as OriginalManyToManyField
 from python_brfied import validate_dv_by_mask, validate_mask, validate_mod11, validate_cnpj
 from python_brfied import only_digits, apply_mask, ValidationException
 from python_brfied import CPF_MASK, CNPJ_MASK, CEP_MASK
@@ -125,3 +125,13 @@ class ForeignKey(OriginalForeignKey):
         kwargs['verbose_name'] = verbose_name
         super(ForeignKey, self).__init__(to, on_delete, related_name, related_query_name, limit_choices_to, parent_link,
                                          to_field, db_constraint, **kwargs)
+
+
+class ManyToManyField(OriginalManyToManyField):
+
+    def __init__(self, verbose_name, to, related_name=None, related_query_name=None, limit_choices_to=None,
+                 symmetrical=None, through=None, through_fields=None, db_constraint=True, db_table=None, swappable=True,
+                 **kwargs):
+        super(ManyToManyField, self).__init__(to, related_name, related_query_name, limit_choices_to, symmetrical,
+                                              through, through_fields, db_constraint, db_table, swappable,
+                                              verbose_name=verbose_name, **kwargs)
