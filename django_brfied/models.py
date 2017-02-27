@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from __future__ import unicode_literals
 from django.core.exceptions import ValidationError
-from django.db.models import Field, CharField
+from django.db.models import CharField, ForeignKey as OriginalForeignKey
 from python_brfied import validate_dv_by_mask, validate_mask, validate_mod11, validate_cnpj
 from python_brfied import only_digits, apply_mask, ValidationException
 from python_brfied import CPF_MASK, CNPJ_MASK, CEP_MASK
@@ -116,3 +116,12 @@ class CEPField(MaskField):
         defaults = kwargs.copy()
         defaults['form_class'] = forms.CEPField
         return super(CEPField, self).formfield(**defaults)
+
+
+class ForeignKey(OriginalForeignKey):
+
+    def __init__(self, verbose_name, to, on_delete=None, related_name=None, related_query_name=None,
+                 limit_choices_to=None, parent_link=False, to_field=None, db_constraint=True, **kwargs):
+        kwargs['verbose_name'] = verbose_name
+        super(ForeignKey, self).__init__(to, on_delete, related_name, related_query_name, limit_choices_to, parent_link,
+                                         to_field, db_constraint, **kwargs)
