@@ -126,6 +126,27 @@ def validate_mod11(unmasked_value, num_digits, num_dvs):
             raise DVException()
 
 
+def validate_cpf(unmasked_value, *args, **kwargs):
+    def dv_maker(v):
+        if v >= 2:
+            return 11 - v
+        return 0
+    # super(CNPJField, self).validate(value, model_instance)
+    value = only_digits(unmasked_value)
+    if len(value) != 11:
+        raise ValidationException('O CNPJ deve ter exatamente 14 digitos')
+
+    orig_dv = value[-2:]
+    new_1dv = sum([i * int(value[idx]) for idx, i in enumerate(list(range(5, 1, -1)) + list(range(9, 1, -1)))])
+    new_1dv = dv_maker(new_1dv % 11)
+    value = value[:-2] + str(new_1dv) + value[-1]
+    new_2dv = sum([i * int(value[idx]) for idx, i in enumerate(list(range(6, 1, -1)) + list(range(9, 1, -1)))])
+    new_2dv = dv_maker(new_2dv % 11)
+    value = value[:-1] + str(new_2dv)
+    if value[-2:] != orig_dv:
+        raise ValidationException('O dígito verificador informado está inválido')
+
+
 def validate_cnpj(unmasked_value, *args, **kwargs):
     def dv_maker(v):
         if v >= 2:
@@ -176,3 +197,68 @@ def validate_dv_by_mask(value, mask, force=True, validate_dv=validate_mod11):
 
 def to_choice(*args):
     return [(x, x) for x in args]
+
+
+class EstadoCivilChoices(object):
+    SOLTEIRO = 'Solteiro(a)'
+    CASADO = 'Casado(a)'
+    DIVORCIADO = 'Divorciado(a)'
+    SEPARADO = 'Separado(a)'
+    VIUVO = 'Viúvo(a)'
+    UNIAO_ESTAVEL = 'União estável'
+    CHOICES = to_choice(SOLTEIRO, CASADO, DIVORCIADO, SEPARADO, VIUVO, UNIAO_ESTAVEL)
+
+    def __init__(self):
+        pass
+
+
+class RacaChoices(object):
+    NAO_DECLARADO = 'Não declarado'
+    AMARELO = 'Amarelo(a)'
+    INDIGENA = 'Indígena'
+    PRETO = 'Preto(a)'
+    BRANCO = 'Branco(a)'
+    PARDO = 'Pardo(a)'
+    CHOICES = to_choice(NAO_DECLARADO, AMARELO, INDIGENA, PRETO, BRANCO, PARDO)
+
+    def __init__(self):
+        pass
+
+
+class SexoChoices(object):
+    SEXO_MASCULINO = 'M'
+    SEXO_FEMININO = 'F'
+    SEXO_NAO_DECLARADO = 'F'
+    CHOICES = [(SEXO_MASCULINO, 'Masculino'), (SEXO_FEMININO, 'Feminino'), (SEXO_NAO_DECLARADO, 'Não declarado')]
+
+    def __init__(self):
+        pass
+
+
+class ZonaChoices(object):
+    URBANA = 'Urbana'
+    RURAL = 'Rural'
+    CHOICES = to_choice(URBANA, RURAL)
+
+    def __init__(self):
+        pass
+
+
+class SimNaoNaoDeclaradoChoices(object):
+    NAO_DECLARADO = 'I'
+    NAO = 'N'
+    SIM = 'S'
+    CHOICES = [(NAO_DECLARADO, 'Não declarado'), (NAO, 'Não'), (SIM, 'Sim')]
+
+    def __init__(self):
+        pass
+
+
+class NecessidadeEspecialChoices(object):
+    CEGUEIRA = 'Cegueira'
+    BAIXA_VISAO = 'Baixa visão'
+    SURDEZ = 'Surdez'
+    CHOICES = to_choice(CEGUEIRA, BAIXA_VISAO, SURDEZ)
+
+    def __init__(self):
+        pass

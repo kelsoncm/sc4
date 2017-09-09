@@ -23,11 +23,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from __future__ import unicode_literals
 from django.core.exceptions import ValidationError
-from django.db.models import CharField, ForeignKey as OriginalForeignKey, ManyToManyField as OriginalManyToManyField
+from django.db.models import CharField
+from django.db.models import ForeignKey as OriginalForeignKey, ManyToManyField as OriginalManyToManyField
 from python_brfied import validate_dv_by_mask, validate_mask, validate_mod11, validate_cnpj
 from python_brfied import only_digits, apply_mask, ValidationException
 from python_brfied import CPF_MASK, CNPJ_MASK, CEP_MASK
+from python_brfied import SexoChoices
 from . import forms
+from .validators import CPFValidator
 
 __all__ = ['MaskField', 'CPFField', 'CNPJField', 'CEPField', ]
 
@@ -81,8 +84,10 @@ class MaskField(CharField):
 class CPFField(MaskField):
     description = "CPF field"
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, max_length=11, validators=[CPFValidator()], *args, **kwargs):
         kwargs['mask'] = CPF_MASK
+        kwargs['max_length'] = max_length
+        kwargs['validators'] = validators
         super(CPFField, self).__init__(*args, **kwargs)
 
     def formfield(self, **kwargs):
@@ -135,3 +140,17 @@ class ManyToManyField(OriginalManyToManyField):
         super(ManyToManyField, self).__init__(to, related_name, related_query_name, limit_choices_to, symmetrical,
                                               through, through_fields, db_constraint, db_table, swappable,
                                               verbose_name=verbose_name, **kwargs)
+
+
+class SexoField(CharField):
+    description = "Sex"
+
+    def __init__(self, verbose_name='', max_length=1, choices=SexoChoices.CHOICES, *args, **kwargs):
+        super(SexoField, self).__init__(verbose_name=verbose_name, max_length=max_length, choices=choices,
+                                        *args, **kwargs)
+
+    def deconstruct(self):
+        name, path, args, kwargs = super(SexoField, self).deconstruct()
+        kwargs['max_length'] = 1
+        kwargs['choices'] = SexoChoices.CHOICES
+        return name, path, args, kwargs
