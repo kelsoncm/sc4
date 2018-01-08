@@ -21,6 +21,13 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from __future__ import unicode_literals
 
 __author__ = 'Kelson da Costa Medeiros <kelsoncm@gmail.com>'
+
+from django.apps import AppConfig
+from django.utils.translation import gettext_lazy as _
+
+
+class BrfiedConfig(AppConfig):
+    name = 'django_brfied.django_brfied'
+    verbose_name = _("django_brfied")

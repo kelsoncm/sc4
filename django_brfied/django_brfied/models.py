@@ -23,16 +23,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from __future__ import unicode_literals
 from django.core.exceptions import ValidationError
-from django.db.models import CharField
+from django.db.models import Model, CharField
 from django.db.models import ForeignKey as OriginalForeignKey, ManyToManyField as OriginalManyToManyField
 from python_brfied import validate_dv_by_mask, validate_mask, validate_mod11, validate_cnpj
 from python_brfied import only_digits, apply_mask, ValidationException
-from python_brfied import CPF_MASK, CNPJ_MASK, CEP_MASK
+from python_brfied import CPF_MASK, CNPJ_MASK, CEP_MASK, RegiaoChoices
 from python_brfied import SexoChoices
-from . import forms
-from .validators import CPFValidator
+from django_brfied.django_brfied import forms
+from django_brfied.django_brfied.validators import CPFValidator
 
-__all__ = ['MaskField', 'CPFField', 'CNPJField', 'CEPField', ]
+# __all__ = ['MaskField', 'CPFField', 'CNPJField', 'CEPField', 'UFField', 'UnidadeFederativa', 'ForeignKey', 'Sexo']
 
 __author__ = 'Kelson da Costa Medeiros <kelsoncm@gmail.com>'
 
@@ -113,9 +113,8 @@ class CNPJField(MaskField):
 class CEPField(MaskField):
     description = "CEP field"
 
-    def __init__(self, *args, **kwargs):
-        kwargs['mask'] = CEP_MASK
-        super(CEPField, self).__init__(*args, **kwargs)
+    def __init__(self, verbose_name='CEP', mask=CEP_MASK, mask_stored=True, *args, **kwargs):
+        super(CEPField, self).__init__(verbose_name, mask, mask_stored, *args, **kwargs)
 
     def formfield(self, **kwargs):
         defaults = kwargs.copy()
@@ -145,7 +144,7 @@ class ManyToManyField(OriginalManyToManyField):
 class SexoField(CharField):
     description = "Sex"
 
-    def __init__(self, verbose_name='', max_length=1, choices=SexoChoices.CHOICES, *args, **kwargs):
+    def __init__(self, verbose_name='Sexo', max_length=1, choices=SexoChoices.CHOICES, *args, **kwargs):
         super(SexoField, self).__init__(verbose_name=verbose_name, max_length=max_length, choices=choices,
                                         *args, **kwargs)
 
@@ -154,3 +153,62 @@ class SexoField(CharField):
         kwargs['max_length'] = 1
         kwargs['choices'] = SexoChoices.CHOICES
         return name, path, args, kwargs
+
+
+class URL(CharField):
+    description = "Sex"
+
+    def __init__(self, verbose_name='Sexo', max_length=1, choices=SexoChoices.CHOICES, *args, **kwargs):
+        super(SexoField, self).__init__(verbose_name=verbose_name, max_length=max_length, choices=choices,
+                                        *args, **kwargs)
+
+    def deconstruct(self):
+        name, path, args, kwargs = super(SexoField, self).deconstruct()
+        kwargs['max_length'] = 1
+        kwargs['choices'] = SexoChoices.CHOICES
+        return name, path, args, kwargs
+
+
+class UnidadeFederativa(Model):
+    sigla = CharField('Sigla', max_length=2, primary_key=True)
+    codigo = CharField('Código', max_length=2, unique=True)
+    nome = CharField('Nome', max_length=250)
+    regiao = CharField('Região', max_length=2, choices=RegiaoChoices.CHOICES)
+
+    class Meta:
+        verbose_name = 'Unidade federativa'
+        verbose_name_plural = 'Unidades federativas'
+        ordering = ['nome']
+
+    def __str__(self):
+        return '%s (%s)' % (self.nome, self.sigla, )
+
+
+class UFField(ForeignKey):
+    def __init__(self, verbose_name='UF', to=UnidadeFederativa, on_delete=None, related_name=None,
+                 related_query_name=None, limit_choices_to=None, parent_link=False, to_field=None,
+                 db_constraint=True, **kwargs):
+        super(UFField, self).__init__(verbose_name, to, on_delete, related_name, related_query_name, limit_choices_to,
+                                      parent_link, to_field, db_constraint, **kwargs)
+
+
+class Municipio(Model):
+    codigo = CharField('Código', max_length=6, primary_key=True)
+    nome = CharField('Código', max_length=255)
+    uf = UFField()
+
+    class Meta:
+        verbose_name = 'Município'
+        verbose_name_plural = 'Municípios'
+        ordering = ['nome']
+
+    def __str__(self):
+        return '%s/%s' % (self.nome, self.uf_id, )
+
+
+class MunicipioField(ForeignKey):
+    def __init__(self, verbose_name='Município', to=Municipio, on_delete=None, related_name=None,
+                 related_query_name=None, limit_choices_to=None, parent_link=False, to_field=None,
+                 db_constraint=True, **kwargs):
+        super(MunicipioField, self).__init__(verbose_name, to, on_delete, related_name, related_query_name,
+                                             limit_choices_to, parent_link, to_field, db_constraint, **kwargs)
