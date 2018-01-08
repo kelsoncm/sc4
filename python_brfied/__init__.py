@@ -84,7 +84,7 @@ class MaskWithoutSpecialCharsException(ValidationException):
 
 
 def only_digits(seq):
-    return filter(type(seq).isdigit, seq)
+    return ''.join(c for c in filter(type(seq).isdigit, seq))
 
 
 def apply_mask(value, mask):
@@ -239,6 +239,19 @@ class ZonaChoices(object):
     URBANA = 'Urbana'
     RURAL = 'Rural'
     CHOICES = to_choice(URBANA, RURAL)
+
+    def __init__(self):
+        pass
+
+
+class RegiaoChoices(object):
+    NORTE = 'N'
+    NORDESTE = 'NE'
+    SUDESTE = 'SE'
+    SUL = 'S'
+    CENTRO_OESTE = 'CO'
+    CHOICES = ((NORTE, 'Norte'), (NORDESTE, 'Nordeste'), (SUDESTE, 'Sudeste'), (SUL, 'Sul'),
+               (CENTRO_OESTE, 'Centro-Oeste'))
 
     def __init__(self):
         pass
