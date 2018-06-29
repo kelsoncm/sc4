@@ -134,7 +134,7 @@ def validate_cpf(unmasked_value, *args, **kwargs):
     # super(CNPJField, self).validate(value, model_instance)
     value = only_digits(unmasked_value)
     if len(value) != 11:
-        raise ValidationException('O CNPJ deve ter exatamente 14 digitos')
+        raise ValidationException('O CPF deve ter exatamente 11 digitos')
 
     orig_dv = value[-2:]
     new_1dv = sum([i * int(value[idx]) for idx, i in enumerate(list(range(5, 1, -1)) + list(range(9, 1, -1)))])

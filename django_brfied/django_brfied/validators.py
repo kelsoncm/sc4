@@ -25,3 +25,11 @@ class CPFValidator(object):
             (self.message == other.message) and
             (self.code == other.code)
         )
+
+
+class CPFAuthValidator:
+    def validate(self, password, user=None):
+        validate_cpf(user.username)
+
+    def get_help_text(self):
+        return 'Informe um CPF válido'
