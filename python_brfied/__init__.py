@@ -127,23 +127,16 @@ def validate_mod11(unmasked_value, num_digits, num_dvs):
 
 
 def validate_cpf(unmasked_value, *args, **kwargs):
-    def dv_maker(v):
-        if v >= 2:
-            return 11 - v
-        return 0
-    # super(CNPJField, self).validate(value, model_instance)
     value = only_digits(unmasked_value)
+
     if len(value) != 11:
         raise ValidationException('O CPF deve ter exatamente 11 digitos')
 
-    orig_dv = value[-2:]
-    new_1dv = sum([i * int(value[idx]) for idx, i in enumerate(list(range(5, 1, -1)) + list(range(9, 1, -1)))])
-    new_1dv = dv_maker(new_1dv % 11)
-    value = value[:-2] + str(new_1dv) + value[-1]
-    new_2dv = sum([i * int(value[idx]) for idx, i in enumerate(list(range(6, 1, -1)) + list(range(9, 1, -1)))])
-    new_2dv = dv_maker(new_2dv % 11)
-    value = value[:-1] + str(new_2dv)
-    if value[-2:] != orig_dv:
+    dv1 = sum([int(value[i]) * (10-i) for i in range(0, 9)]) * 10 % 11
+    dv2 = sum([int(value[i]) * (11-i) for i in range(0, 10)]) * 10 % 11
+    dvs = "%d%d" * (dv1, dv2)
+
+    if value[-2:] != dvs:
         raise ValidationException('O dígito verificador informado está inválido')
 
 
