@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 The MIT License (MIT)
 
@@ -21,7 +20,6 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
-from __future__ import unicode_literals
 import re
 
 
@@ -54,33 +52,33 @@ class ValidationException(Exception):
 
 
 class EmptyMaskException(ValidationException):
-    def __init__(self):
-        super(MaskException, self).__init__('Nenhuma máscara informada')
+    def __init__(self, message='Nenhuma máscara informada'):
+        super(MaskException, self).__init__(message)
 
 
 class MaskException(ValidationException):
-    def __init__(self):
-        super(MaskException, self).__init__('Valor informado não está no formato correto')
+    def __init__(self, message='Valor informado não está no formato correto'):
+        super(MaskException, self).__init__(message)
 
 
 class DVException(ValidationException):
-    def __init__(self):
-        super(DVException, self).__init__('Valor incorreto. Dígito verifcador inconsistente.')
+    def __init__(self, message='Valor incorreto. Dígito verifcador inconsistente.'):
+        super(DVException, self).__init__(message)
 
 
 class MaskWithoutDigitsException(ValidationException):
-    def __init__(self):
-        super(DVException, self).__init__('A máscara não tem dígitos')
+    def __init__(self, message='A máscara não tem dígitos'):
+        super(DVException, self).__init__(message)
 
 
 class MaskWithoutDVException(ValidationException):
-    def __init__(self):
-        super(DVException, self).__init__('A máscara não tem dígitos verificador')
+    def __init__(self, message='A máscara não tem dígitos verificador'):
+        super(DVException, self).__init__(message)
 
 
 class MaskWithoutSpecialCharsException(ValidationException):
-    def __init__(self):
-        super(DVException, self).__init__('A máscara só contém dígitos')
+    def __init__(self, message='A máscara só contém dígitos'):
+        super(DVException, self).__init__(message)
 
 
 def only_digits(seq):
@@ -130,35 +128,33 @@ def validate_cpf(unmasked_value, *args, **kwargs):
     value = only_digits(unmasked_value)
 
     if len(value) != 11:
-        raise ValidationException('O CPF deve ter exatamente 11 digitos')
+        raise MaskException('O CPF deve ter exatamente 11 digitos')
 
     dv1 = sum([int(value[i]) * (10-i) for i in range(0, 9)]) * 10 % 11
     dv2 = sum([int(value[i]) * (11-i) for i in range(0, 10)]) * 10 % 11
-    dvs = "%d%d" * (dv1, dv2)
+    dv1 = dv1 if dv1 != 10 else 0
+    dv2 = dv2 if dv2 != 10 else 0
 
-    if value[-2:] != dvs:
-        raise ValidationException('O dígito verificador informado está inválido')
+    if value[-2:] != "%d%d" % (dv1, dv2):
+        raise DVException('O dígito verificador informado está inválido')
 
 
 def validate_cnpj(unmasked_value, *args, **kwargs):
-    def dv_maker(v):
-        if v >= 2:
-            return 11 - v
-        return 0
-    # super(CNPJField, self).validate(value, model_instance)
     value = only_digits(unmasked_value)
-    if len(value) != 14:
-        raise ValidationException('O CNPJ deve ter exatamente 14 digitos')
 
-    orig_dv = value[-2:]
-    new_1dv = sum([i * int(value[idx]) for idx, i in enumerate(list(range(5, 1, -1)) + list(range(9, 1, -1)))])
-    new_1dv = dv_maker(new_1dv % 11)
-    value = value[:-2] + str(new_1dv) + value[-1]
-    new_2dv = sum([i * int(value[idx]) for idx, i in enumerate(list(range(6, 1, -1)) + list(range(9, 1, -1)))])
-    new_2dv = dv_maker(new_2dv % 11)
-    value = value[:-1] + str(new_2dv)
-    if value[-2:] != orig_dv:
-        raise ValidationException('O dígito verificador informado está inválido')
+    if len(value) != 14:
+        raise MaskException('O CNPJ ter exatamente 14 digitos')
+
+    c1 = (5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2)
+    c2 = (6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2)
+    dv1 = sum([int(value[i]) * c1[i] for i in range(0, 12)])
+    dv2 = sum([int(value[i]) * c2[i] for i in range(0, 13)])
+    dv1 = 11 - dv1 % 11 if dv1 % 11 > 2 else 0
+    dv2 = 11 - dv2 % 11 if dv2 % 11 > 2 else 0
+    dvs = "%d%d" % (dv1, dv2)
+
+    if value[-2:] != dvs:
+        raise DVException('O dígito verificador informado está inválido')
 
 
 def validate_mask(mask):

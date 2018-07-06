@@ -20,4 +20,4 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 # @author 'Kelson da Costa Medeiros <kelsoncm@gmail.com>'
-Django>=1.7
+

@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 from distutils.core import setup
 setup(
-    name='django_brfied',
-    packages=['django_brfied', 'python_brfied', ],
-    package_dir={'django_brfied': 'django_brfied'},
-    package_data={'django_brfied': ['django_brfied/static/js/*', 'django_brfied/*', 'django_brfied/migrations/*', 'django_brfied/management/commands/*'],},
-    version='0.4.5',
-    download_url='https://github.com/kelsoncm/django_brfied/releases/tag/0.4.5',
-    description='Django Application specific brazilian fields types',
+    name='python_brfied',
+    packages=['python_brfied', ],
+    package_dir={'python_brfied': 'python_brfied'},
+    version='0.5.0',
+    download_url='https://github.com/kelsoncm/python_brfied/releases/tag/0.5.0',
+    description='Python library specific brazilian validations',
     author='Kelson da Costa Medeiros',
     author_email='kelsoncm@gmail.com',
-    url='https://github.com/kelsoncm/django_brfied',
-    keywords=['django', 'BR', 'Brazil', 'Brasil', 'model', 'form', 'locale', ],
+    url='https://github.com/kelsoncm/python_brfied',
+    keywords=['python', 'BR', 'Brazil', 'Brasil', 'model', 'form', 'locale', ],
     classifiers=[]
 )
