@@ -87,3 +87,24 @@ def unzip_csv_content(content):
             csv_content = io.StringIO(str(zip_file.read()).replace("\\r\\n", '\r\n'))
             return [dict(row) for row in csv.DictReader(csv_content, delimiter=';', quotechar='"')]
 
+
+class BaseHandler(object):
+    def __init__(self, successor=None):
+        self._successor = successor
+
+    def on_start(self):
+        pass
+
+    def handle(self, *args, **kwargs):
+        raise NotImplemented()
+
+    def on_stop(self):
+        pass
+
+
+class BaseDirector(object):
+
+    def __init__(self, loaders: List[str]):
+        self._loaders = loaders
+        self._first_loader = None
+        build_chain(loaders)
