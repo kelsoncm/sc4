@@ -53,11 +53,6 @@ class MaskWithoutDigitsException(ValidationException):
         super(MaskWithoutDigitsException, self).__init__(message)
 
 
-class MaskWithoutDVException(ValidationException):
-    def __init__(self, message='A máscara não tem dígitos verificador'):
-        super(MaskWithoutDVException, self).__init__(message)
-
-
 class MaskWithoutSpecialCharsException(ValidationException):
     def __init__(self, message='A máscara só contém dígitos'):
         super(MaskWithoutSpecialCharsException, self).__init__(message)
