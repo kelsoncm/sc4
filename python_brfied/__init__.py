@@ -52,11 +52,11 @@ def str2bool(v):
     raise ValueError('Boolean value expected.')
 
 
-def percentagem(num1, num2):
+def percentage(num1, num2, precision=2):
     if num1 == 0 or num2 == 0:
         return float(0)
     else:
-        return float(num1) / float(num2) * 100
+        return round(float(num1) / float(num2) * 100.0, precision)
 
 
 def instantiate_class(full_class_name, *args, **kwargs):
@@ -75,17 +75,16 @@ def build_chain(loaders: List[str]):
     return instance
 
 
-def unzip_content(content):
+def unzip_content(content, file_index=0, encoding='utf-8'):
     with zipfile.ZipFile(io.BytesIO(content)) as zip_files:
-        with zip_files.open(zip_files.filelist[0].filename) as zip_file:
-            return str(zip_file.read()).replace("\\r\\n", '\r\n')
+        with zip_files.open(zip_files.filelist[file_index].filename) as zip_file:
+            binary_file_content = zip_file.read()
+            return binary_file_content if encoding is None else binary_file_content.decode(encoding)
 
 
-def unzip_csv_content(content):
-    with zipfile.ZipFile(io.BytesIO(content)) as zip_files:
-        with zip_files.open(zip_files.filelist[0].filename) as zip_file:
-            csv_content = io.StringIO(str(zip_file.read()).replace("\\r\\n", '\r\n'))
-            return [dict(row) for row in csv.DictReader(csv_content, delimiter=';', quotechar='"')]
+def unzip_csv_content(content, file_index=0, encoding='utf-8', **kwargs):
+    csv_stream_content = io.StringIO(unzip_content(content, file_index, encoding))
+    return [dict(row) for row in csv.DictReader(csv_stream_content, **kwargs)]
 
 
 class BaseHandler(object):
@@ -106,5 +105,4 @@ class BaseDirector(object):
 
     def __init__(self, loaders: List[str]):
         self._loaders = loaders
-        self._first_loader = None
-        build_chain(loaders)
+        self._first_loader = build_chain(loaders)
