@@ -31,9 +31,16 @@ def env(name, default=None):
     return getenv(name, default)
 
 
-def env_as_list(name, default=None):
-    return getenv(name, default)
+def env_as_list(name, default='', delimiter=','):
+    if default.strip() == '':
+        return []
+    return getenv(name, default).split(delimiter)
+
+
+def env_as_list_of_maps(name, key, default='', delimiter=','):
+    return [{key: x} for x in env_as_list(name, default, delimiter)]
 
 
 def env_as_bool(name, default=None):
-    return
+    from python_brfied import str2bool
+    return str2bool(getenv(name, default))
