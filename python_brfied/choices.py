@@ -66,6 +66,7 @@ class SexoDeclaradoEnum(Enum):
 SexoDeclaradoEnum.SEXO_FEMININO.description = 'Feminino'
 SexoDeclaradoEnum.SEXO_MASCULINO.description = 'Masculino'
 SexoDeclaradoEnum.SEXO_DECLARADO_CHOICES = to_choice(SexoDeclaradoEnum)
+SexoDeclaradoEnum.CHOICES = to_choice(SexoDeclaradoEnum)
 
 
 class SexoEnum(Enum):
@@ -178,6 +179,34 @@ UnidadeFederativaEnum.SC.description = 'Santa Catarina'
 UnidadeFederativaEnum.SP.description = 'São Paulo'
 UnidadeFederativaEnum.SE.description = 'Sergipe'
 UnidadeFederativaEnum.TO.description = 'Tocantins'
+UnidadeFederativaEnum.AC.code = '12'
+UnidadeFederativaEnum.AL.code = '27'
+UnidadeFederativaEnum.AP.code = '16'
+UnidadeFederativaEnum.AM.code = '13'
+UnidadeFederativaEnum.BA.code = '29'
+UnidadeFederativaEnum.CE.code = '23'
+UnidadeFederativaEnum.DF.code = '53'
+UnidadeFederativaEnum.ES.code = '32'
+UnidadeFederativaEnum.GO.code = '52'
+UnidadeFederativaEnum.MA.code = '21'
+UnidadeFederativaEnum.MT.code = '51'
+UnidadeFederativaEnum.MS.code = '50'
+UnidadeFederativaEnum.MG.code = '31'
+UnidadeFederativaEnum.PA.code = '15'
+UnidadeFederativaEnum.PB.code = '25'
+UnidadeFederativaEnum.PR.code = '41'
+UnidadeFederativaEnum.PE.code = '26'
+UnidadeFederativaEnum.PI.code = '22'
+UnidadeFederativaEnum.RJ.code = '33'
+UnidadeFederativaEnum.RN.code = '24'
+UnidadeFederativaEnum.RS.code = '43'
+UnidadeFederativaEnum.RO.code = '11'
+UnidadeFederativaEnum.RR.code = '14'
+UnidadeFederativaEnum.SC.code = '42'
+UnidadeFederativaEnum.SP.code = '35'
+UnidadeFederativaEnum.SE.code = '28'
+UnidadeFederativaEnum.TO.code = '17'
 UnidadeFederativaEnum.CHOICES = to_choice(UnidadeFederativaEnum)
-UnidadeFederativaEnum.SIGLAS = [x[0] for x in UnidadeFederativaEnum.CHOICES]
-UnidadeFederativaEnum.NOMES = [x[1] for x in UnidadeFederativaEnum.CHOICES]
+UnidadeFederativaEnum.SIGLAS = [x.value for x in UnidadeFederativaEnum]
+UnidadeFederativaEnum.NOMES = [x.description for x in UnidadeFederativaEnum]
+UnidadeFederativaEnum.CODIGOS = [x.code for x in UnidadeFederativaEnum]
