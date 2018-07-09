@@ -95,7 +95,7 @@ class BaseHandler(object):
         pass
 
     def handle(self, *args, **kwargs):
-        raise NotImplemented()
+        raise NotImplementedError()
 
     def on_stop(self):
         pass
