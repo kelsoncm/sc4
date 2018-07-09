@@ -106,7 +106,6 @@ def validate_cnpj(unmasked_value, *args, **kwargs):
     dvs = "%d%d" % (dv1, dv2)
 
     if value[-2:] != dvs:
-        print(dvs)
         raise DVException('O dígito verificador informado está inválido')
 
 
