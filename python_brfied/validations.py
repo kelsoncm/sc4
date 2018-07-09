@@ -26,7 +26,7 @@ __author__ = 'Kelson da Costa Medeiros <kelsoncm@gmail.com>'
 
 import re
 from .exceptions import MaskException, EmptyMaskException, DVException, \
-    MaskWithoutDigitsException, MaskWithoutSpecialCharsException
+    MaskWithoutDigitsException, MaskWithoutSpecialCharsException, MaskNotStringException, TooManyDigitsException
 
 
 CPF_MASK = '999.999.999-00'
@@ -76,15 +76,6 @@ def validate_masked_value(value, mask, force=True):
     return masked_value
 
 
-def validate_mod11(unmasked_value, num_digits, num_dvs):
-    for v in range(num_dvs, 0, -1):
-        num_digito = num_digits - v + 1
-        dv = sum([i * int(unmasked_value[idx]) for idx, i in enumerate(range(num_digito, 1, -1))]) % 11
-        calculated_dv = '%d' % (11 - dv if dv >= 2 else 0,)
-        if calculated_dv != unmasked_value[-v]:
-            raise DVException()
-
-
 def validate_cpf(unmasked_value, *args, **kwargs):
     value = only_digits(unmasked_value)
 
@@ -115,12 +106,16 @@ def validate_cnpj(unmasked_value, *args, **kwargs):
     dvs = "%d%d" % (dv1, dv2)
 
     if value[-2:] != dvs:
+        print(dvs)
         raise DVException('O dígito verificador informado está inválido')
 
 
 def validate_mask(mask):
-    if mask is None or mask == '':
-        raise EmptyMaskException();
+    if not isinstance(mask, str):
+        raise MaskNotStringException()
+
+    if mask is None or mask.strip() == '':
+        raise EmptyMaskException()
 
     unmask = only_digits(mask)
 
@@ -131,7 +126,24 @@ def validate_mask(mask):
         raise MaskWithoutSpecialCharsException()
 
 
+def validate_mod11(unmasked_value, num_len, dvs_len):
+    if num_len > 11:
+        raise TooManyDigitsException()
+    for v in range(dvs_len, 0, -1):
+        num_dvs = num_len - v + 1
+        dv = sum([i * int(unmasked_value[idx]) for idx, i in enumerate(range(num_dvs, 1, -1))]) % 11
+        calculated_dv = '%d' % (11 - dv if dv >= 2 else 0,)
+        if calculated_dv != unmasked_value[-v]:
+            print(calculated_dv, unmasked_value[-v])
+            raise DVException()
+
+
 def validate_dv_by_mask(value, mask, force=True, validate_dv=validate_mod11):
+    if not isinstance(value, str):
+        raise ValueError('O valor deve ser uma string')
+
+    if value is None or value.strip() == '':
+        raise ValueError('O valor não poder ser nulo ou uma string vazia')
     validate_mask(mask)
     unmask = only_digits(mask)
     masked_value = validate_masked_value(value, mask, force)
