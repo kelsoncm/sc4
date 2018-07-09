@@ -28,14 +28,19 @@ class ValidationException(Exception):
     pass
 
 
-class EmptyMaskException(ValidationException):
-    def __init__(self, message='Nenhuma máscara informada'):
-        super(MaskException, self).__init__(message)
-
-
 class MaskException(ValidationException):
     def __init__(self, message='Valor informado não está no formato correto'):
         super(MaskException, self).__init__(message)
+
+
+class EmptyMaskException(MaskException):
+    def __init__(self, message='Nenhuma máscara informada'):
+        super(EmptyMaskException, self).__init__(message)
+
+
+class MaskNotStringException(MaskException):
+    def __init__(self, message='A máscara não é uma string'):
+        super(MaskNotStringException, self).__init__(message)
 
 
 class DVException(ValidationException):
@@ -44,15 +49,20 @@ class DVException(ValidationException):
 
 
 class MaskWithoutDigitsException(ValidationException):
-    def __init__(self, message='A máscara não tem dígitos'):
-        super(DVException, self).__init__(message)
+    def __init__(self, message='A máscara não tem dígitos 9'):
+        super(MaskWithoutDigitsException, self).__init__(message)
 
 
 class MaskWithoutDVException(ValidationException):
     def __init__(self, message='A máscara não tem dígitos verificador'):
-        super(DVException, self).__init__(message)
+        super(MaskWithoutDVException, self).__init__(message)
 
 
 class MaskWithoutSpecialCharsException(ValidationException):
     def __init__(self, message='A máscara só contém dígitos'):
-        super(DVException, self).__init__(message)
+        super(MaskWithoutSpecialCharsException, self).__init__(message)
+
+
+class TooManyDigitsException(MaskException):
+    def __init__(self, message='A quantidade de dígitos é muito grande'):
+        super(TooManyDigitsException, self).__init__(message)
