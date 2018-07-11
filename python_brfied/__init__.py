@@ -23,7 +23,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 __author__ = 'Kelson da Costa Medeiros <kelsoncm@gmail.com>'
 
-import zipfile, io, csv
 from typing import List
 from python_brfied.choices import *
 from python_brfied.datetime import *
@@ -31,6 +30,7 @@ from python_brfied.env import *
 from python_brfied.exceptions import *
 from python_brfied.validations import *
 from python_brfied.validations import *
+from python_brfied.shortcuts.zip import *
 
 
 def str2bool(v):
@@ -73,18 +73,6 @@ def build_chain(loaders: List[str]):
         instance = instantiate_class(loader, instance)
     loaders.reverse()
     return instance
-
-
-def unzip_content(content, file_index=0, encoding='utf-8'):
-    with zipfile.ZipFile(io.BytesIO(content)) as zip_files:
-        with zip_files.open(zip_files.filelist[file_index].filename) as zip_file:
-            binary_file_content = zip_file.read()
-            return binary_file_content if encoding is None else binary_file_content.decode(encoding)
-
-
-def unzip_csv_content(content, file_index=0, encoding='utf-8', **kwargs):
-    csv_stream_content = io.StringIO(unzip_content(content, file_index, encoding))
-    return [dict(row) for row in csv.DictReader(csv_stream_content, **kwargs)]
 
 
 class BaseHandler(object):

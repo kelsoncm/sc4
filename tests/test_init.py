@@ -2,7 +2,7 @@ from unittest import TestCase
 from enum import Enum
 from python_brfied import str2bool, percentage
 from python_brfied import instantiate_class, build_chain
-from python_brfied import unzip_content, unzip_csv_content
+from python_brfied import unzip_content, unzip_csv_content, FileNotFoundInZipError
 from python_brfied import BaseHandler, BaseDirector
 from python_brfied.choices import to_choice, UnidadeFederativaEnum
 from python_brfied.env import env, env_as_list, env_as_list_of_maps, env_as_bool
@@ -95,9 +95,20 @@ class TestPythonBrfiedInit(TestCase):
         self.assertRaises(NotImplementedError, base_handler.handle)
 
     def test_unzip_content(self):
+        expected = "codigo;nome\n1;um\n2;Dois\n3;três\n"
+        expected_binary = b'codigo;nome\n1;um\n2;Dois\n3;tr\xc3\xaas\n'
+        expected_latin1 = 'codigo;nome\n1;um\n2;Dois\n3;trÃªs\n'
         with open("assets/file01.zip", "rb") as f:
-            content = unzip_content(f.read())
-            self.assertEqual("codigo;nome\n1;um\n2;Dois\n3;três\n", content)
+            binary = f.read()
+        self.assertEqual(expected, unzip_content(binary))
+        self.assertEqual(expected, unzip_content(binary, 0))
+        self.assertEqual(expected, unzip_content(binary, 'file.csv'))
+        self.assertRaises(FileNotFoundInZipError, unzip_content, binary, 'file2.csv')
+        self.assertRaises(FileNotFoundInZipError, unzip_content, binary, 1)
+
+        self.assertEqual(expected_binary, unzip_content(binary, encoding=None))
+        self.assertEqual(expected_latin1, unzip_content(binary, encoding='latin_1'))
+        self.assertRaises(UnicodeDecodeError, unzip_content, binary, encoding='ascii')
 
     def test_unzip_csv_content(self):
         with open("assets/file01.zip", "rb") as f:
