@@ -61,6 +61,6 @@ def get_zip_content(url, headers={}, file_id=0, encoding='utf-8'):
     return unzip_content(content, file_id=file_id, encoding=encoding)
 
 
-def get_zip_csv_content(url, headers={}, file_id=0, encoding='utf-8'):
+def get_zip_csv_content(url, headers={}, file_id=0, encoding='utf-8', **kargs):
     content = get(url, encoding=None, headers=headers)
-    return unzip_csv_content(content, file_id=file_id, encoding=encoding)
+    return unzip_csv_content(content, file_id=file_id, encoding=encoding, **kargs)

@@ -130,4 +130,4 @@ class TestPythonBrfiedShortcutSyncHttp(TestCase):
         self.assertEqual(FILE01_CSV_EXPECTED, get_zip_content(self.file01_zip_url))
 
     def test_get_zip_csv_content(self):
-        self.assertEqual(CSV_EXPECTED, get_zip_csv_content(self.file01_zip_url))
+        self.assertEqual(CSV_EXPECTED, get_zip_csv_content(self.file01_zip_url, delimiter=';'))

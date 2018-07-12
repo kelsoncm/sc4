@@ -9,7 +9,7 @@ FILE02_JSON_EXPECTED_LATIN1 = '["caÃ§a"]'
 
 FILE02_JSON_EXPECTED_BINARY = b'["ca\xc3\xa7a"]'
 
-CSV_EXPECTED = [{'codigo;nome': '1;um'}, {'codigo;nome': '2;Dois'}, {'codigo;nome': '3;três'}]
+CSV_EXPECTED = [{'codigo': '1', 'nome': 'um'}, {'codigo': '2', 'nome': 'Dois'}, {'codigo': '3', 'nome': 'três'}]
 JSON_EXPECTED = ['caça']
 ZIP_EXPECTED = b'PK\x03\x04\n\x00\x00\x00\x00\x00&z\xe9L\xad\rM\x07 \x00\x00\x00 \x00' \
                       b'\x00\x00\x08\x00\x1c\x00file.csvUT\t\x00\x03\xa8\xa6C[\xd6\xa6C[u' \
