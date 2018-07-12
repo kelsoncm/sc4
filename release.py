@@ -12,8 +12,7 @@ with open('setup.py', 'w') as f:
 from distutils.core import setup
 setup(
     name='python_brfied',
-    packages=['python_brfied', ],
-    package_dir={'python_brfied': 'python_brfied'},
+    packages=['python_brfied', 'python_brfied.shortcuts', ],
     version='%s',
     download_url='https://github.com/kelsoncm/python_brfied/releases/tag/%s',
     description='Python library specific brazilian validations',
@@ -31,5 +30,3 @@ os.system("git tag %s" % args.version)
 os.system("git push --tags origin master")
 os.system("python setup.py sdist")
 os.system("twine upload dist/python_brfied-%s.tar.gz" % args.version)
-# os.system("python setup.py sdist upload -r pypi")
-
