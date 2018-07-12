@@ -2,10 +2,9 @@
 from distutils.core import setup
 setup(
     name='python_brfied',
-    packages=['python_brfied', ],
-    package_dir={'python_brfied': 'python_brfied'},
-    version='0.6.1',
-    download_url='https://github.com/kelsoncm/python_brfied/releases/tag/0.6.1',
+    packages=['python_brfied', 'python_brfied.shortcuts', ],
+    version='0.6.2',
+    download_url='https://github.com/kelsoncm/python_brfied/releases/tag/0.6.2',
     description='Python library specific brazilian validations',
     author='Kelson da Costa Medeiros',
     author_email='kelsoncm@gmail.com',
