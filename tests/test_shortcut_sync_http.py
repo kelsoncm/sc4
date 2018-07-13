@@ -76,7 +76,6 @@ class TestPythonBrfiedShortcutSyncHttp(TestCase):
         self.file02_json_url = "http://localhost:%d/file02_json" % self.port
         self.file02_zip_url = "http://localhost:%d/file02_zip" % self.port
 
-
     @classmethod
     def setUpClass(cls):
         # https://realpython.com/testing-third-party-apis-with-mock-servers/
@@ -96,8 +95,7 @@ class TestPythonBrfiedShortcutSyncHttp(TestCase):
                                get, self.file_not_found)
 
         try:
-            get(self.file_not_found)
-            self.fail('Deveria dar um erro')
+            self.assertIsNotNone(get(self.file_not_found))
         except Exception as exc:
             self.assertEqual(404, getattr(exc, 'status', None))
             self.assertEqual('File not found', getattr(exc, 'reason', None))
