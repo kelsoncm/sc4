@@ -66,13 +66,13 @@ def instantiate_class(full_class_name, *args, **kwargs):
     return MyClass(*args, **kwargs)
 
 
-def build_chain(loaders: List[str]):
-    instance = None
-    loaders.reverse()
-    for loader in loaders:
-        instance = instantiate_class(loader, instance)
-    loaders.reverse()
-    return instance
+def build_chain(links_names: List[str]):
+    link = None
+    links = []
+    for link_name in links_names[::-1]:
+        link = instantiate_class(link_name, link)
+        links.append(link)
+    return links[::-1]
 
 
 class BaseHandler(object):
@@ -91,6 +91,7 @@ class BaseHandler(object):
 
 class BaseDirector(object):
 
-    def __init__(self, loaders: List[str]):
-        self._loaders = loaders
-        self._first_loader = build_chain(loaders)
+    def __init__(self, links_names: List[str]):
+        self._links_names = links_names
+        self._links = build_chain(links_names)
+        self._first_loader = self._links[0] if len(self._links) > 0 else []

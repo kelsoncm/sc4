@@ -20,6 +20,9 @@ class TestBaseHandler(BaseHandler):
         return inc+1
 
 
+class TestBase2Handler(TestBaseHandler): pass
+
+
 class TestPythonBrfiedInit(TestCase):
 
     def test_str2bool(self):
@@ -81,18 +84,35 @@ class TestPythonBrfiedInit(TestCase):
 
     def test_instantiate_class(self):
         self.assertIsInstance(instantiate_class('python_brfied.BaseHandler', None), BaseHandler)
-        self.assertIsInstance(instantiate_class('python_brfied.BaseDirector', []), BaseDirector)
 
     def test_build_chain(self):
-        first = build_chain(['test_init.TestBaseHandler', 'test_init.TestBaseHandler'])
-        self.assertIsNotNone(first)
-        self.assertIsNone(first.on_start())
-        self.assertIsInstance(first, TestBaseHandler)
-        self.assertIsNone(first.on_stop())
-        self.assertEqual(2, first.handle(0))
         base_handler = BaseHandler()
         self.assertIsNotNone(base_handler)
         self.assertRaises(NotImplementedError, base_handler.handle)
+        self.assertIsNone(base_handler.on_start())
+        self.assertIsNone(base_handler.on_stop())
+
+        self.assertIsNotNone(build_chain([]))
+        self.assertEqual(0, len(build_chain([])))
+
+        links = build_chain(['test_init.TestBaseHandler', 'test_init.TestBase2Handler'])
+        self.assertIsNotNone(links)
+        print(links[0] == TestBaseHandler and links[1] == TestBase2Handler)
+        self.assertEqual(2, len(links))
+
+        first = links[0]
+        last = links[1]
+        self.assertIsNotNone(first)
+        self.assertIsNotNone(last)
+
+        self.assertIsInstance(first, TestBaseHandler)
+        self.assertIsInstance(last, TestBase2Handler)
+
+        self.assertIsNone(first.on_start())
+        self.assertIsNone(first.on_stop())
+
+        self.assertEqual(2, first.handle(0))
+        self.assertEqual(1, last.handle(0))
 
     def test_unzip_content(self):
         expected = "codigo;nome\n1;um\n2;Dois\n3;três\n"
@@ -117,9 +137,15 @@ class TestPythonBrfiedInit(TestCase):
             self.assertListEqual(expected, content)
 
     def test_BaseDirector(self):
+        self.assertListEqual(BaseDirector([])._first_loader, [])
+
+        base_director = BaseDirector(['test_init.TestBaseHandler', 'test_init.TestBaseHandler'])
+        self.assertIsInstance(base_director._first_loader, TestBaseHandler)
+
         base_director = BaseDirector(['test_init.TestBaseHandler', 'test_init.TestBaseHandler'])
         self.assertIsInstance(base_director._first_loader, TestBaseHandler)
         self.assertEqual(2, base_director._first_loader.handle(0))
+        self.assertEqual(2, len(base_director._links))
         # self.assertIsNone(BaseDirector()._first_loader)
 
 
