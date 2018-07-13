@@ -133,7 +133,6 @@ def validate_mod11(unmasked_value, num_len, dvs_len):
         dv = sum([i * int(unmasked_value[idx]) for idx, i in enumerate(range(num_dvs, 1, -1))]) % 11
         calculated_dv = '%d' % (11 - dv if dv >= 2 else 0,)
         if calculated_dv != unmasked_value[-v]:
-            print(calculated_dv, unmasked_value[-v])
             raise DVException()
 
 
