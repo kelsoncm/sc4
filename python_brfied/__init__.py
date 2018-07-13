@@ -95,3 +95,15 @@ class BaseDirector(object):
         self._links_names = links_names
         self._links = build_chain(links_names)
         self._first_loader = self._links[0] if len(self._links) > 0 else []
+
+    def on_start(self):
+        for link in self._links:
+            link.on_start()
+
+    def execute(self, *args, **kwargs):
+        for link in self._links:
+            link.handle(*args, **kwargs)
+
+    def on_stop(self):
+        for link in self._links:
+            link.on_stop()
