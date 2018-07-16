@@ -99,6 +99,10 @@ class TestPythonBrfiedInit(TestCase):
         self.assertIsNotNone(build_chain([]))
         self.assertEqual(0, len(build_chain([])))
 
+        links = build_chain([TestBaseHandler, TestBase2Handler])
+        self.assertIsNotNone(links)
+        self.assertEqual(2, len(links))
+
         links = build_chain(['test_init.TestBaseHandler', 'test_init.TestBase2Handler'])
         self.assertIsNotNone(links)
         self.assertEqual(2, len(links))

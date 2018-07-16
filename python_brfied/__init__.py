@@ -70,7 +70,10 @@ def build_chain(links_names: List[str]):
     link = None
     links = []
     for link_name in links_names[::-1]:
-        link = instantiate_class(link_name, link)
+        if isinstance(link_name, str):
+            link = instantiate_class(link_name, link)
+        else:
+            link = link_name(link)
         links.append(link)
     return links[::-1]
 
