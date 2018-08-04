@@ -21,3 +21,18 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from unittest import TestCase
+from python_brfied.datetime import now, now_str, this_month, others_months
+
+
+class TestPythonBrfiedDatetime(TestCase):
+
+    def test_now_str(self):
+        self.assertEqual(now().strftime("%d-%m-%Y %H:%M:%S"), now_str())
+
+    def test_this_month(self):
+        self.assertEqual(now().month, this_month())
+
+    def test_others_months(self):
+        t = this_month()
+        self.assertEqual([m for m in range(1, 13) if m != t], others_months())

@@ -1,36 +1,32 @@
+"""
+The MIT License (MIT)
+
+Copyright (c) 2015 kelsoncm
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"""
 import json
 from io import BytesIO
 from zipfile import ZipFile
 from http.client import HTTPException
 import requests
-from .zip import unzip_content, unzip_csv_content
-
-
-# from http.client import HTTPConnection, HTTPException
-# from urllib.parse import urlparse
-#
-#
-# def native_get(url, headers={}, encoding='utf-8'):
-#     url_parts = urlparse(url)
-#     conn = HTTPConnection(url_parts.hostname, port=url_parts.port if url_parts.port is not None else 80)
-#     try:
-#         conn.request('GET', url, headers=headers)
-#         response = conn.getresponse()
-#         if response.status == 200:
-#             byte_array_content = response.read()
-#             return byte_array_content if encoding is None else byte_array_content.decode(encoding)
-#         elif response.status == 301:
-#             byte_array_content = response.read()
-#             return byte_array_content if encoding is None else byte_array_content.decode(encoding)
-#         else:
-#             exc = HTTPException('%s - %s' % (response.status, response.reason))
-#             exc.status = response.status
-#             exc.reason = response.reason
-#             exc.headers = response.headers
-#             exc.url = url
-#             raise exc
-#     finally:
-#         conn.close()
+from .zip import unzip_content, unzip_csv_content, unzip_fwf_content
 
 
 def requests_get(url, headers={}, encoding='utf-8', decode=True):
@@ -67,3 +63,8 @@ def get_zip_content(url, headers={}, file_id=0, encoding='utf-8'):
 def get_zip_csv_content(url, headers={}, file_id=0, encoding='utf-8', **kargs):
     content = get(url, encoding=None, headers=headers)
     return unzip_csv_content(content, file_id=file_id, encoding=encoding, **kargs)
+
+
+def get_zip_fwf_content(url, file_descriptor, headers={}, file_id=0, encoding='utf-8', newline="\n\r"):
+    content = get(url, encoding=None, headers=headers)
+    return unzip_fwf_content(content, file_descriptor, file_id, encoding, newline)

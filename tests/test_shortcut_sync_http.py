@@ -1,13 +1,38 @@
+"""
+The MIT License (MIT)
+
+Copyright (c) 2015 kelsoncm
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"""
 from unittest import TestCase
-from python_brfied.shortcuts.sync_http import get, get_json, get_zip, get_zip_content, get_zip_csv_content
 import socket
+from zipfile import ZipFile, ZipInfo
+from threading import Thread
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from http.client import HTTPException
-from threading import Thread
+from python_brfied.shortcuts.sync_http import get, get_json, get_zip, get_zip_content, get_zip_csv_content, \
+    get_zip_fwf_content
 from tests import FILE01_CSV_EXPECTED, FILE01_CSV_EXPECTED_BINARY, FILE01_CSV_EXPECTED_LATIN1
 from tests import FILE02_JSON_EXPECTED, FILE02_JSON_EXPECTED_BINARY, FILE02_JSON_EXPECTED_LATIN1
 from tests import ZIP_EXPECTED, JSON_EXPECTED, CSV_EXPECTED
-from zipfile import ZipFile, ZipInfo
+from tests import FWF_EXPECTED, FILE_DESCRIPTOR
 
 
 def get_free_port():
@@ -31,7 +56,11 @@ class MockServerRequestHandler(BaseHTTPRequestHandler):
     with open("assets/file02.zip", "rb") as f:
         file02_zip = f.read()
 
-    files = {'file01_csv': file01_csv, 'file01_zip': file01_zip, 'file02_json': file02_json, 'file02_zip': file02_zip, }
+    with open("assets/example01_are_right.fwf.zip", "rb") as f:
+        example01_are_right_fwf_zip = f.read()
+
+    files = {'file01_csv': file01_csv, 'file01_zip': file01_zip, 'file02_json': file02_json, 'file02_zip': file02_zip,
+             "example01_are_right.fwf.zip": example01_are_right_fwf_zip}
 
     FILE_NOT_FOUND_ERROR_MESSAGE = 'File not found'
 
@@ -75,6 +104,7 @@ class TestPythonBrfiedShortcutSyncHttp(TestCase):
         self.file01_zip_url = "http://localhost:%d/file01_zip" % self.port
         self.file02_json_url = "http://localhost:%d/file02_json" % self.port
         self.file02_zip_url = "http://localhost:%d/file02_zip" % self.port
+        self.example01_are_right_fwf_zip_url = "http://localhost:%d/example01_are_right.fwf.zip" % self.port
 
     @classmethod
     def setUpClass(cls):
@@ -129,3 +159,7 @@ class TestPythonBrfiedShortcutSyncHttp(TestCase):
 
     def test_get_zip_csv_content(self):
         self.assertEqual(CSV_EXPECTED, get_zip_csv_content(self.file01_zip_url, delimiter=';'))
+
+    def test_get_zip_fwf_content(self):
+        self.assertEqual(FWF_EXPECTED, get_zip_fwf_content(self.example01_are_right_fwf_zip_url, FILE_DESCRIPTOR,
+                                                           newline="\n"))

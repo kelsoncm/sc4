@@ -21,3 +21,4 @@
 #
 # @author 'Kelson da Costa Medeiros <kelsoncm@gmail.com>'
 
+pyfwf==0.1.2
