@@ -20,7 +20,7 @@ setup(
     author_email='kelsoncm@gmail.com',
     url='https://github.com/kelsoncm/python_brfied',
     keywords=['python', 'BR', 'Brazil', 'Brasil', 'model', 'form', 'locale', ],
-    install_requires=['pyfwf==0.1.2', 'requests-ftp==0.3.1', 'requests==2.19.1']
+    install_requires=['pyfwf==0.1.2', 'requests-ftp==0.3.1', 'requests==2.19.1'],
     classifiers=[]
 )
 """ % (args.version, args.version,))
