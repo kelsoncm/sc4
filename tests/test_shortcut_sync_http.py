@@ -29,6 +29,8 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from http.client import HTTPException
 from python_brfied.shortcuts.sync_http import get, get_json, get_zip, get_zip_content, get_zip_csv_content, \
     get_zip_fwf_content
+from pyfwf.descriptors import FileDescriptor, HeaderRowDescriptor, DetailRowDescriptor
+from pyfwf.columns import CharColumn
 from tests import FILE01_CSV_EXPECTED, FILE01_CSV_EXPECTED_BINARY, FILE01_CSV_EXPECTED_LATIN1
 from tests import FILE02_JSON_EXPECTED, FILE02_JSON_EXPECTED_BINARY, FILE02_JSON_EXPECTED_LATIN1
 from tests import ZIP_EXPECTED, JSON_EXPECTED, CSV_EXPECTED
@@ -146,6 +148,9 @@ class TestPythonBrfiedShortcutSyncHttp(TestCase):
 
         self.assertEqual('file.csv', get_zip(self.file01_zip_url).filelist[0].filename)
 
+    def test_get_ftp(self):
+        self.assertEqual("04/09/2012 12:24:13\r\n", get("ftp://ftp.datasus.gov.br/cnes/informe_cnes.txt"))
+
     def test_get_json(self):
         self.assertEqual(JSON_EXPECTED, get_json(self.file02_json_url))
 
@@ -156,6 +161,11 @@ class TestPythonBrfiedShortcutSyncHttp(TestCase):
 
     def test_get_zip_content(self):
         self.assertEqual(FILE01_CSV_EXPECTED, get_zip_content(self.file01_zip_url))
+
+    def test_get_zip_content_ftp(self):
+        with open("assets/IMPORT_201711.txt") as f:
+            expected = f.read()
+        self.assertEqual(expected, get_zip_content("ftp://ftp.datasus.gov.br/cnes/IMPORT_201711.ZIP").replace("\r", ""))
 
     def test_get_zip_csv_content(self):
         self.assertEqual(CSV_EXPECTED, get_zip_csv_content(self.file01_zip_url, delimiter=';'))

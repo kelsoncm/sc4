@@ -25,12 +25,13 @@ import json
 from io import BytesIO
 from zipfile import ZipFile
 from http.client import HTTPException
+from requests_ftp import ftp
 import requests
 from .zip import unzip_content, unzip_csv_content, unzip_fwf_content
 
 
 def requests_get(url, headers={}, encoding='utf-8', decode=True):
-    response = requests.get(url, headers=headers)
+    response = ftp.FTPSession().get(url) if url.lower().startswith("ftp://") else requests.get(url, headers=headers)
     if response.ok:
         byte_array_content = response.content
         return byte_array_content.decode(encoding) if decode and encoding is not None else byte_array_content
