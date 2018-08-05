@@ -22,3 +22,5 @@
 # @author 'Kelson da Costa Medeiros <kelsoncm@gmail.com>'
 
 pyfwf==0.1.2
+requests-ftp==0.3.1
+requests==2.19.1
