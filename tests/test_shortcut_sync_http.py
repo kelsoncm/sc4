@@ -168,7 +168,7 @@ class TestPythonBrfiedShortcutSyncHttp(TestCase):
         self.assertEqual(expected, get_zip_content("ftp://ftp.datasus.gov.br/cnes/IMPORT_201711.ZIP").replace("\r", ""))
 
     def test_get_zip_csv_content(self):
-        self.assertEqual(CSV_EXPECTED, get_zip_csv_content(self.file01_zip_url, delimiter=';'))
+        self.assertEqual(CSV_EXPECTED, get_zip_csv_content(self.file01_zip_url, unzip_kwargs={"delimiter": ';'}))
 
     def test_get_zip_fwf_content(self):
         self.assertEqual(FWF_EXPECTED, get_zip_fwf_content(self.example01_are_right_fwf_zip_url, FILE_DESCRIPTOR,

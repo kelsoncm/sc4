@@ -82,13 +82,13 @@ class BaseHandler(object):
     def __init__(self, successor=None):
         self._successor = successor
 
-    def on_start(self):
+    def on_start(self, *args, **kwargs):
         pass
 
     def handle(self, *args, **kwargs):
         raise NotImplementedError()
 
-    def on_stop(self):
+    def on_stop(self, *args, **kwargs):
         pass
 
 
@@ -99,14 +99,14 @@ class BaseDirector(object):
         self._links = build_chain(links_names)
         self._first_loader = self._links[0] if len(self._links) > 0 else []
 
-    def on_start(self):
+    def on_start(self, *args, **kwargs):
         for link in self._links:
-            link.on_start()
+            link.on_start(*args, **kwargs)
 
     def execute(self, *args, **kwargs):
         for link in self._links:
             link.handle(*args, **kwargs)
 
-    def on_stop(self):
+    def on_stop(self, *args, **kwargs):
         for link in self._links:
-            link.on_stop()
+            link.on_stop(*args, **kwargs)

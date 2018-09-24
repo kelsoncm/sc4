@@ -30,8 +30,12 @@ import requests
 from .zip import unzip_content, unzip_csv_content, unzip_fwf_content
 
 
-def requests_get(url, headers={}, encoding='utf-8', decode=True):
-    response = ftp.FTPSession().get(url) if url.lower().startswith("ftp://") else requests.get(url, headers=headers)
+def requests_get(url, headers={}, encoding='utf-8', decode=True, **kwargs):
+    if url.lower().startswith("ftp://"):
+        response = ftp.FTPSession().get(url, **kwargs)
+    else:
+        response = requests.get(url, headers=headers, **kwargs)
+
     if response.ok:
         byte_array_content = response.content
         return byte_array_content.decode(encoding) if decode and encoding is not None else byte_array_content
@@ -47,25 +51,25 @@ def requests_get(url, headers={}, encoding='utf-8', decode=True):
 get = requests_get
 
 
-def get_json(url, headers={}, encoding='utf-8'):
-    content = get(url, headers=headers, encoding=encoding)
-    return json.loads(content)
+def get_json(url, headers={}, encoding='utf-8', json_kwargs={}, **kwargs):
+    content = get(url, headers=headers, encoding=encoding, **kwargs)
+    return json.loads(content, **json_kwargs)
 
 
-def get_zip(url, headers={}):
-    return ZipFile(BytesIO(get(url, headers, encoding=None)))
+def get_zip(url, headers={}, **kwargs):
+    return ZipFile(BytesIO(get(url, headers, encoding=None, **kwargs)))
 
 
-def get_zip_content(url, headers={}, file_id=0, encoding='utf-8'):
-    content = get(url, encoding=None, headers=headers)
+def get_zip_content(url, headers={}, file_id=0, encoding='utf-8', **kwargs):
+    content = get(url, encoding=None, headers=headers, **kwargs)
     return unzip_content(content, file_id=file_id, encoding=encoding)
 
 
-def get_zip_csv_content(url, headers={}, file_id=0, encoding='utf-8', **kargs):
-    content = get(url, encoding=None, headers=headers)
-    return unzip_csv_content(content, file_id=file_id, encoding=encoding, **kargs)
+def get_zip_csv_content(url, headers={}, file_id=0, encoding='utf-8', unzip_kwargs={}, **kwargs):
+    content = get(url, encoding=None, headers=headers, **kwargs)
+    return unzip_csv_content(content, file_id=file_id, encoding=encoding, **unzip_kwargs)
 
 
-def get_zip_fwf_content(url, file_descriptor, headers={}, file_id=0, encoding='utf-8', newline="\n\r"):
-    content = get(url, encoding=None, headers=headers)
+def get_zip_fwf_content(url, file_descriptor, headers={}, file_id=0, encoding='utf-8', newline="\n\r", **kwargs):
+    content = get(url, encoding=None, headers=headers, **kwargs)
     return unzip_fwf_content(content, file_descriptor, file_id, encoding, newline)
