@@ -21,8 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+import json
 from unittest import TestCase
-from python_brfied.env import env, env_as_list, env_as_list_of_maps, env_as_bool
+from python_brfied.env import env, env_as_list, env_as_list_of_maps, env_as_bool, env_as_int, env_from_json
 
 
 class TestPythonBrfiedEnv(TestCase):
@@ -60,3 +61,12 @@ class TestPythonBrfiedEnv(TestCase):
         self.assertIsNone(env_as_bool('DUMMY_ENV'))
         self.assertIsNone(env_as_bool('DUMMY_ENV', None))
         self.assertIsNone(env_as_bool('DUMMY_ENV', ' '))
+
+    def test_env_as_int(self):
+        self.assertIsNone(env_as_int('DUMMY_ENV', None))
+        self.assertEquals(0, env_as_int('DUMMY_ENV', 0))
+
+    def test_env_as_json(self):
+        self.assertEquals({'full': 'name'}, env_from_json('DUMMY_ENV', '{"full": "name"}'))
+        self.assertIsNone(env_from_json('DUMMY_ENV', None))
+        self.assertRaises(json.decoder.JSONDecodeError, env_from_json, 'DUMMY_ENV', '')

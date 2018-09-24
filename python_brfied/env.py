@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 __author__ = 'Kelson da Costa Medeiros <kelsoncm@gmail.com>'
 
-
+import json
 from os import getenv
 
 
@@ -44,3 +44,13 @@ def env_as_list_of_maps(name, key, default='', delimiter=','):
 def env_as_bool(name, default=None):
     from python_brfied import str2bool
     return str2bool(getenv(name, default))
+
+
+def env_from_json(key, default=''):
+    result = env(key, default)
+    return json.loads(result) if result is not None else result
+
+
+def env_as_int(key, default=None):
+    result = env(key, default)
+    return int(result) if result is not None else result
