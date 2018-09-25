@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 import json
+import os
 from unittest import TestCase
 from python_brfied.env import env, env_as_list, env_as_list_of_maps, env_as_bool, env_as_int, env_from_json
 
@@ -29,9 +30,13 @@ from python_brfied.env import env, env_as_list, env_as_list_of_maps, env_as_bool
 class TestPythonBrfiedEnv(TestCase):
 
     def test_env(self):
-        self.assertEqual('ASDF', env('DUMMY_ENV', 'ASDF'))
+        os.environ['WRAPPED'] = "'aqui'"
+        self.assertEqual("ASDF", env('DUMMY_ENV', 'ASDF'))
+        self.assertEqual("'aqui'", env('WRAPPED', 'ASDF'))
+        self.assertEqual("aqui", env('WRAPPED', 'ASDF', True))
 
     def test_env_as_list(self):
+
         self.assertListEqual([], env_as_list('DUMMY_ENV'))
         self.assertListEqual([], env_as_list('DUMMY_ENV', ''))
         self.assertListEqual([], env_as_list('DUMMY_ENV', ' '))
@@ -40,6 +45,9 @@ class TestPythonBrfiedEnv(TestCase):
         self.assertListEqual(['a', 'b'], env_as_list('DUMMY_ENV', 'a,b'))
 
         self.assertListEqual(['a', 'b'], env_as_list('DUMMY_ENV', 'a;b', delimiter=';'))
+
+        os.environ['ALIST'] = 'c,d'
+        self.assertListEqual(['c', 'd'], env_as_list('ALIST', ''))
 
     def test_env_as_list_of_maps(self):
         self.assertListEqual([], env_as_list_of_maps('DUMMY_ENV', 'K'))
@@ -70,3 +78,5 @@ class TestPythonBrfiedEnv(TestCase):
         self.assertEquals({'full': 'name'}, env_from_json('DUMMY_ENV', '{"full": "name"}'))
         self.assertIsNone(env_from_json('DUMMY_ENV', None))
         self.assertRaises(json.decoder.JSONDecodeError, env_from_json, 'DUMMY_ENV', '')
+        os.environ['JSON'] = "'[]'"
+        self.assertEquals([], env_from_json('JSON', '{"full": "name"}', True))

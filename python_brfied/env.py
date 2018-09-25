@@ -27,30 +27,34 @@ import json
 from os import getenv
 
 
-def env(name, default=None):
-    return getenv(name, default)
+def env(name, default=None, wrapped=False):
+    result = getenv(name, default)
+    if wrapped and isinstance(result, str) and result[0:1] == "'" and result[-1:] == "'":
+        return result[1:-1]
+    return result
 
 
-def env_as_list(name, default='', delimiter=','):
-    if default.strip() == '':
+def env_as_list(name, default='', delimiter=',', wrapped=False):
+    result = env(name, default, wrapped)
+    if result.strip() == '' and default.strip() == '':
         return []
-    return getenv(name, default).split(delimiter)
+    return result.split(delimiter)
 
 
-def env_as_list_of_maps(name, key, default='', delimiter=','):
-    return [{key: x} for x in env_as_list(name, default, delimiter)]
+def env_as_list_of_maps(name, key, default='', delimiter=',', wrapped=False):
+    return [{key: x} for x in env_as_list(name, default, delimiter, wrapped)]
 
 
-def env_as_bool(name, default=None):
+def env_as_bool(name, default=None, wrapped=False):
     from python_brfied import str2bool
-    return str2bool(getenv(name, default))
+    return str2bool(env(name, default, wrapped))
 
 
-def env_from_json(key, default=''):
-    result = env(key, default)
+def env_from_json(key, default='', wrapped=False):
+    result = env(key, default, wrapped)
     return json.loads(result) if result is not None else result
 
 
-def env_as_int(key, default=None):
-    result = env(key, default)
+def env_as_int(key, default=None, wrapped=False):
+    result = env(key, default, wrapped)
     return int(result) if result is not None else result
