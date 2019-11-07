@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from unittest import TestCase
-from pyshortcuts import str2bool
+from pyatalhos import str2bool
 
 
 class TestPythonBrfiedInit(TestCase):

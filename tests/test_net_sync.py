@@ -27,7 +27,7 @@ from zipfile import ZipFile, ZipInfo
 from threading import Thread
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from http.client import HTTPException
-from pyshortcuts.net_sync import get, get_json, get_zip, get_zip_content, get_zip_csv_content, \
+from pyatalhos.net_sync import get, get_json, get_zip, get_zip_content, get_zip_csv_content, \
     get_zip_fwf_content
 from pyfwf.descriptors import FileDescriptor, HeaderRowDescriptor, DetailRowDescriptor
 from pyfwf.columns import CharColumn

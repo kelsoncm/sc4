@@ -24,9 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 __author__ = 'Kelson da Costa Medeiros <kelsoncm@gmail.com>'
 
 from typing import List
-from pyshortcuts.datetime import *
-from pyshortcuts.env import *
-from pyshortcuts.zip import *
-from pyshortcuts.str import *
-from pyshortcuts.klass import *
-from pyshortcuts.number import *
+from pyatalhos.datetime import *
+from pyatalhos.env import *
+from pyatalhos.zip import *
+from pyatalhos.str import *
+from pyatalhos.klass import *
+from pyatalhos.number import *

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PROJECT_NAME="pyshortcuts"
+PROJECT_NAME="pyatalhos"
 FULL_IMAGE_NAME="kelsoncm/$PROJECT_NAME"
 
 if [ $# -eq 0 ]
@@ -36,14 +36,14 @@ create_setup_cfg_file() {
     echo """# -*- coding: utf-8 -*-
 from distutils.core import setup
 setup(
-    name='pyshortcuts',
-    packages=['pyshortcuts', 'pyshortcuts.shortcuts', ],
+    name='pyatalhos',
+    packages=['pyatalhos', ],
     version='$1',
-    download_url='https://github.com/kelsoncm/pyshortcuts/releases/tag/$1',
+    download_url='https://github.com/kelsoncm/pyatalhos/releases/tag/$1',
     description='Python library specific brazilian validations',
     author='Kelson da Costa Medeiros',
     author_email='kelsoncm@gmail.com',
-    url='https://github.com/kelsoncm/pyshortcuts',
+    url='https://github.com/kelsoncm/pyatalhos',
     keywords=['python', 'BR', 'Brazil', 'Brasil', 'model', 'form', 'locale', ],
     install_requires=['pyfwf==0.1.3', 'requests-ftp==0.3.1', 'requests==2.21.0'],
     classifiers=[]

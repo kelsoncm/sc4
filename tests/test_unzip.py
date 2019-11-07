@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from unittest import TestCase
-from pyshortcuts import unzip_content, unzip_csv_content, unzip_fwf_content, FileNotFoundInZipError
+from pyatalhos import unzip_content, unzip_csv_content, unzip_fwf_content, FileNotFoundInZipError
 from tests import FWF_EXPECTED, FILE_DESCRIPTOR
 
 

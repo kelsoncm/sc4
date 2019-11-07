@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from unittest import TestCase
-from pyshortcuts.datetime import now, now_str, this_month, others_months
+from pyatalhos.datetime import now, now_str, this_month, others_months
 
 
 class TestPythonBrfiedDatetime(TestCase):
