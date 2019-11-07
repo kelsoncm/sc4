@@ -24,7 +24,7 @@ SOFTWARE.
 import json
 import os
 from unittest import TestCase
-from python_brfied.env import env, env_as_list, env_as_list_of_maps, env_as_bool, env_as_int, env_from_json
+from pyshortcuts.env import env, env_as_list, env_as_list_of_maps, env_as_bool, env_as_int, env_from_json
 
 
 class TestPythonBrfiedEnv(TestCase):

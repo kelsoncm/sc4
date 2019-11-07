@@ -27,7 +27,7 @@ from zipfile import ZipFile, ZipInfo
 from threading import Thread
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from http.client import HTTPException
-from python_brfied.shortcuts.sync_http import get, get_json, get_zip, get_zip_content, get_zip_csv_content, \
+from pyshortcuts.net_sync import get, get_json, get_zip, get_zip_content, get_zip_csv_content, \
     get_zip_fwf_content
 from pyfwf.descriptors import FileDescriptor, HeaderRowDescriptor, DetailRowDescriptor
 from pyfwf.columns import CharColumn
@@ -46,19 +46,19 @@ def get_free_port():
 
 
 class MockServerRequestHandler(BaseHTTPRequestHandler):
-    with open("assets/file01.csv", "rb") as f:
+    with open("/src/tests/assets/file01.csv", "rb") as f:
         file01_csv = f.read()
 
-    with open("assets/file01.zip", "rb") as f:
+    with open("/src/tests/assets/file01.zip", "rb") as f:
         file01_zip = f.read()
 
-    with open("assets/file02.json", "rb") as f:
+    with open("/src/tests/assets/file02.json", "rb") as f:
         file02_json = f.read()
 
-    with open("assets/file02.zip", "rb") as f:
+    with open("/src/tests/assets/file02.zip", "rb") as f:
         file02_zip = f.read()
 
-    with open("assets/example01_are_right.fwf.zip", "rb") as f:
+    with open("/src/tests/assets/example01_are_right.fwf.zip", "rb") as f:
         example01_are_right_fwf_zip = f.read()
 
     files = {'file01_csv': file01_csv, 'file01_zip': file01_zip, 'file02_json': file02_json, 'file02_zip': file02_zip,
@@ -163,7 +163,7 @@ class TestPythonBrfiedShortcutSyncHttp(TestCase):
         self.assertEqual(FILE01_CSV_EXPECTED, get_zip_content(self.file01_zip_url))
 
     def test_get_zip_content_ftp(self):
-        with open("assets/IMPORT_201711.txt") as f:
+        with open("/src/tests/assets/IMPORT_201711.txt") as f:
             expected = f.read()
         self.assertEqual(expected, get_zip_content("ftp://ftp.datasus.gov.br/cnes/IMPORT_201711.ZIP").replace("\r", ""))
 

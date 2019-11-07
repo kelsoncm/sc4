@@ -64,11 +64,6 @@ dont apply a mask on inputs.
 * [x] get_zip_fwf_content
 
 
-## Classes
-* [x] BaseHandler
-* [x] BaseDirector
-
-
 ## ZIP shortcuts
 
 * [x] unzip_content

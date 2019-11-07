@@ -22,17 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from unittest import TestCase
-from pyshortcuts.datetime import now, now_str, this_month, others_months
+from pyshortcuts import percentage
 
 
-class TestPythonBrfiedDatetime(TestCase):
-
-    def test_now_str(self):
-        self.assertEqual(now().strftime("%d-%m-%Y %H:%M:%S"), now_str())
-
-    def test_this_month(self):
-        self.assertEqual(now().month, this_month())
-
-    def test_others_months(self):
-        t = this_month()
-        self.assertEqual([m for m in range(1, 13) if m != t], others_months())
+class TestNumber(TestCase):
+    
+    def test_percentage(self):
+        self.assertEqual(100, percentage(1, 1))
+        self.assertEqual(0.0, percentage(0, 0))

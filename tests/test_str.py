@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from unittest import TestCase
-from python_brfied import str2bool, percentage
+from pyshortcuts import str2bool
 
 
 class TestPythonBrfiedInit(TestCase):
@@ -79,7 +79,3 @@ class TestPythonBrfiedInit(TestCase):
         self.assertIsNone(str2bool(' '))
 
         self.assertRaises(ValueError, str2bool, 2)
-
-    def test_percentage(self):
-        self.assertEqual(100, percentage(1, 1))
-        self.assertEqual(0.0, percentage(0, 0))

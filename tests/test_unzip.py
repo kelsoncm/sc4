@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from unittest import TestCase
-from python_brfied import unzip_content, unzip_csv_content, unzip_fwf_content, FileNotFoundInZipError
+from pyshortcuts import unzip_content, unzip_csv_content, unzip_fwf_content, FileNotFoundInZipError
 from tests import FWF_EXPECTED, FILE_DESCRIPTOR
 
 
@@ -32,7 +32,7 @@ class TestPythonBrfiedInit(TestCase):
         expected = "codigo;nome\n1;um\n2;Dois\n3;três\n"
         expected_binary = b'codigo;nome\n1;um\n2;Dois\n3;tr\xc3\xaas\n'
         expected_latin1 = 'codigo;nome\n1;um\n2;Dois\n3;trÃªs\n'
-        with open("assets/file01.zip", "rb") as f:
+        with open("/src/tests/assets/file01.zip", "rb") as f:
             binary = f.read()
         self.assertEqual(expected, unzip_content(binary))
         self.assertEqual(expected, unzip_content(binary, 0))
@@ -45,12 +45,12 @@ class TestPythonBrfiedInit(TestCase):
         self.assertRaises(UnicodeDecodeError, unzip_content, binary, encoding='ascii')
 
     def test_unzip_csv_content(self):
-        with open("assets/file01.zip", "rb") as f:
+        with open("/src/tests/assets/file01.zip", "rb") as f:
             content = unzip_csv_content(f.read(), delimiter=';')
             expected = [{"codigo": '1', 'nome': 'um'}, {"codigo": '2', 'nome': 'Dois'}, {"codigo": '3', 'nome': 'três'}]
             self.assertListEqual(expected, content)
 
     def test_unzip_fwf_content(self):
-        with open("assets/example01_are_right.fwf.zip", "rb") as f:
+        with open("/src/tests/assets/example01_are_right.fwf.zip", "rb") as f:
             content = unzip_fwf_content(f.read(), FILE_DESCRIPTOR, newline="\n")
             self.assertListEqual(FWF_EXPECTED, content)
