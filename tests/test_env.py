@@ -72,11 +72,11 @@ class TestPythonBrfiedEnv(TestCase):
 
     def test_env_as_int(self):
         self.assertIsNone(env_as_int('DUMMY_ENV', None))
-        self.assertEquals(0, env_as_int('DUMMY_ENV', 0))
+        self.assertEqual(0, env_as_int('DUMMY_ENV', 0))
 
     def test_env_as_json(self):
-        self.assertEquals({'full': 'name'}, env_from_json('DUMMY_ENV', '{"full": "name"}'))
+        self.assertEqual({'full': 'name'}, env_from_json('DUMMY_ENV', '{"full": "name"}'))
         self.assertIsNone(env_from_json('DUMMY_ENV', None))
         self.assertRaises(json.decoder.JSONDecodeError, env_from_json, 'DUMMY_ENV', '')
         os.environ['JSON'] = "'[]'"
-        self.assertEquals([], env_from_json('JSON', '{"full": "name"}', True))
+        self.assertEqual([], env_from_json('JSON', '{"full": "name"}', True))
