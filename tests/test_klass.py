@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from unittest import TestCase
-from pyatalhos import instantiate_class
+from pyatalhos.klass import instantiate_class
 
 
 class TestKlass(TestCase):

@@ -47,13 +47,12 @@ setup(
     keywords=['python', 'BR', 'Brazil', 'Brasil', 'model', 'form', 'locale', ],
     install_requires=['pyfwf==0.1.3', 'requests-ftp==0.3.1', 'requests==2.21.0'],
     classifiers=[]
-)
-""" > setup.py
+)""" > setup.py
 
     echo "Build local version $FULL_IMAGE_NAME:$1"
     echo ""
     docker build -t $FULL_IMAGE_NAME:latest --force-rm .
-    docker run --rm -it -v `pwd`:/src $FULL_IMAGE_NAME:latest sh -c 'coverage run -m unittest tests/test_* && coverage report -m && python setup.py sdist'
+    docker run --rm -it -v `pwd`:/src $FULL_IMAGE_NAME:latest sh -c 'flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics && flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics && coverage run -m unittest tests/test_* && coverage report -m && python setup.py sdist'
 }
 
 create_setup_cfg_file $2

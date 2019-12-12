@@ -25,6 +25,7 @@ __author__ = 'Kelson da Costa Medeiros <kelsoncm@gmail.com>'
 
 import importlib
 
+
 def instantiate_class(full_class_name, *args, **kwargs):
     module_name, class_name = full_class_name.rsplit(".", 1)
     MyClass = getattr(importlib.import_module(module_name), class_name)
