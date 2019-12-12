@@ -1,25 +1,25 @@
 # Python BRfied
 
-Why I create PyAtalhos? To avoid codes copy and paste. This are a many of code shortcuts  that I used many times.
+Why I create pyatalhos? To avoid code's copy and paste. This are a many of code shortcuts  that I used many times.
 
 
 ## Date and time
 
-* today
-* now
-* now_str
-* this_month
-* others_months
+* today - today date
+* now - date and time of this moment
+* now_str - date and time of this moment formatted as "%d-%m-%Y %H:%M:%S"
+* this_month - this month (a integer from 1 to 12)
+* others_months - a list of all monthts (a integer from 1 to 12), except this month
 
 
 ## Env
 
-* env
-* env_as_list
-* env_as_list_of_maps
-* env_as_bool
-* env_from_json
-* env_as_int
+* env - the value of a environment variable as String
+* env_as_list - the value of a environment variable as List, comma is the default separator
+* env_as_list_of_maps - the value of a environment variable as List of Maps, comma is the default separator of maps
+* env_as_bool - the value of a environment variable as Boolean
+* env_as_int - the value of a environment variable as Integer
+* env_from_json - the value of a environment variable Python structure (lists and maps) considering the env as JSON
 
 
 ## Class manipulation
@@ -32,7 +32,7 @@ Why I create PyAtalhos? To avoid codes copy and paste. This are a many of code s
 * get_json - Get HTTP and FTP as JSON
 * get_zip - Get HTTP and FTP as ZipFile
 * get_zip_content - Get first (by default) HTTP and FTP file content in a ZipFile
-* get_zip_csv_content - Get first (by default) HTTP and FTP file content in a ZipFile as iterable CSV (somma-separated values file)
+* get_zip_csv_content - Get first (by default) HTTP and FTP file content in a ZipFile as iterable CSV (comma-separated values file)
 * get_zip_fwf_content - Get first (by default) HTTP and FTP file content in a ZipFile as iterable FWF (fixed width file)
 
 
@@ -57,7 +57,7 @@ Why I create PyAtalhos? To avoid codes copy and paste. This are a many of code s
 
 The MIT License (MIT)
 
-Copyright (c) 2015 kelsoncm
+Copyright (c) 2019 kelsoncm
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
