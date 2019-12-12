@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from unittest import TestCase
+import os
 import socket
 from zipfile import ZipFile, ZipInfo
 from threading import Thread
@@ -37,6 +38,9 @@ from tests import ZIP_EXPECTED, JSON_EXPECTED, CSV_EXPECTED
 from tests import FWF_EXPECTED, FILE_DESCRIPTOR
 
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+
+
 def get_free_port():
     s = socket.socket(socket.AF_INET, type=socket.SOCK_STREAM)
     s.bind(('localhost', 0))
@@ -46,19 +50,19 @@ def get_free_port():
 
 
 class MockServerRequestHandler(BaseHTTPRequestHandler):
-    with open("/src/tests/assets/file01.csv", "rb") as f:
+    with open(dir_path + "/assets/file01.csv", "rb") as f:
         file01_csv = f.read()
 
-    with open("/src/tests/assets/file01.zip", "rb") as f:
+    with open(dir_path + "/assets/file01.zip", "rb") as f:
         file01_zip = f.read()
 
-    with open("/src/tests/assets/file02.json", "rb") as f:
+    with open(dir_path + "/assets/file02.json", "rb") as f:
         file02_json = f.read()
 
-    with open("/src/tests/assets/file02.zip", "rb") as f:
+    with open(dir_path + "/assets/file02.zip", "rb") as f:
         file02_zip = f.read()
 
-    with open("/src/tests/assets/example01_are_right.fwf.zip", "rb") as f:
+    with open(dir_path + "/assets/example01_are_right.fwf.zip", "rb") as f:
         example01_are_right_fwf_zip = f.read()
 
     files = {'file01_csv': file01_csv, 'file01_zip': file01_zip, 'file02_json': file02_json, 'file02_zip': file02_zip,
@@ -163,7 +167,7 @@ class TestPythonBrfiedShortcutSyncHttp(TestCase):
         self.assertEqual(FILE01_CSV_EXPECTED, get_zip_content(self.file01_zip_url))
 
     def test_get_zip_content_ftp(self):
-        with open("/src/tests/assets/IMPORT_201711.txt") as f:
+        with open(dir_path + "/assets/IMPORT_201711.txt") as f:
             expected = f.read()
         self.assertEqual(expected, get_zip_content("ftp://ftp.datasus.gov.br/cnes/IMPORT_201711.ZIP").replace("\r", ""))
 
