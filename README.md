@@ -1,74 +1,56 @@
 # Python BRfied
 
-Why I create BRfied? Because localflavors dont validate user data and
-dont apply a mask on inputs.
+Why I create PyAtalhos? To avoid codes copy and paste. This are a many of code shortcuts  that I used many times.
 
 
-## Data types
+## Date and time
 
-* [x] Estado Civil
-* [x] Raça
-* [x] Sexo
-* [x] Sexo opcional
-* [x] Zona de habitação
-* [x] Região geopolítica
-* [x] Sim/Não
-* [x] Sim/Não opcional 
-* [x] Necessidade especial
-* [x] Unidade federativa
+* today
+* now
+* now_str
+* this_month
+* others_months
 
 
-## Validações e formatações
+## Env
 
-* [x] validate_masked_value
-* [x] validate_cpf
-* [x] validate_cnpj
-* [x] validate_mask
-* [x] validate_mod11
-* [x] validate_dv_by_mask
-* [ ] CEP
-* [ ] Data
-* [ ] Hora
-* [ ] Data e hora
-* [ ] CNES
-* [ ] CNS
-* [ ] Protocolo integrado (https://protocolointegrado.gov.br/Protocolo/projeto.jsf)
-* [ ] Protocolo justiça (https://www.conjur.com.br/2009-jan-23/cnj-define-padrao-numeracao-processos-todos-tribunais http://www.stf.jus.br/portal/cms/verTexto.asp?servico=processoPeticaoEletronica&pagina=Informacoes_gerais_apos_desligamento_v1)
-* [ ] PJe
-* [ ] Linha digitável de boleto
-* [ ] Código de barra de boleto
-* [ ] Linha digitável de título
-* [ ] Código de barra de título
-* [ ] Nota fiscal eletrônica
-* [ ] Código de município do IBGE (https://github.com/chinnonsantos/sql-paises-estados-cidades https://concla.ibge.gov.br/classificacoes/por-tema/codigo-de-areas/codigo-de-areas)
-* [ ] 
+* env
+* env_as_list
+* env_as_list_of_maps
+* env_as_bool
+* env_from_json
+* env_as_int
 
 
-## Funções
+## Class manipulation
 
-* [x] str2bool
-* [x] percentage
-* [x] instantiate_class
-* [x] build_chain
-* [x] only_digits
-* [x] apply_mask
+* instantiate_class
 
+## Network sync
 
-## Sync HTTP requests shortcuts
-
-* [x] requests_get
-* [x] get_json
-* [x] get_zip
-* [x] get_zip_content
-* [x] get_zip_csv_content
-* [x] get_zip_fwf_content
+* get - Get HTTP and FTP content as decoded String 
+* get_json - Get HTTP and FTP as JSON
+* get_zip - Get HTTP and FTP as ZipFile
+* get_zip_content - Get first (by default) HTTP and FTP file content in a ZipFile
+* get_zip_csv_content - Get first (by default) HTTP and FTP file content in a ZipFile as iterable CSV (somma-separated values file)
+* get_zip_fwf_content - Get first (by default) HTTP and FTP file content in a ZipFile as iterable FWF (fixed width file)
 
 
-## ZIP shortcuts
+## Number
 
-* [x] unzip_content
-* [x] unzip_csv_content
-* [x] unzip_fwf_content
+* percentage - Percentage of num2 of num1 width fixed precision (default 2)
+
+
+## String 
+
+* str2bool - Cast 'true', 'verdade', 'yes', 'sim', 't', 'v', 'y', 's', '1', 'false', 'falso', 'no', 'nao', 'não', 'f', 'n' and '0' to Boolean
+
+
+## ZIP
+
+* unzip_content - unzip the specified (first by default) file in a 'in memory' zip
+* unzip_csv_content - unzip the specified (first by default) file in a 'in memory' zip, iterate that as a CSV (somma-separated values file) and return a list of dict of this content
+* unzip_fwf_content - unzip the specified (first by default) file in a 'in memory' zip, iterate that as a FWF (fixed width file) and return a list of dict of this content
 
 
 ## LICENSE
