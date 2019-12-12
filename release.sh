@@ -20,7 +20,7 @@ OPTIONS
        <version>  Release version number
 EXAMPLES
        o   Build a image to local usage only:
-                  ./release.sh -b 1.0
+                  ./release.sh -l 1.0
        o   Build and push to GitHub:
                   ./release.sh -g 1.0
        o   Build and registry on GitHub:
