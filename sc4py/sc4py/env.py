@@ -25,6 +25,7 @@ __author__ = 'Kelson da Costa Medeiros <kelsoncm@gmail.com>'
 
 import json
 from os import getenv
+from sc4py.str import str2bool
 
 
 def env(name, default=None, wrapped=False):
@@ -46,7 +47,6 @@ def env_as_list_of_maps(name, key, default='', delimiter=',', wrapped=False):
 
 
 def env_as_bool(name, default=None, wrapped=False):
-    from pyatalhos.str import str2bool
     return str2bool(env(name, default, wrapped))
 
 

@@ -26,7 +26,9 @@ requests-ftp==0.3.1
 requests==2.22.0
 
 # build
-coverage
-twine
-flake8
-pyftpdlib
+coverage==4.5.4
+twine==2.0.0
+flake8==3.7.9
+
+# test
+pyftpdlib==1.5.5
