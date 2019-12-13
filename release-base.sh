@@ -62,10 +62,9 @@ push_to_github() {
   then
     printf "\n\n\GITHUB: Pushing\n"
     git add $PROJECT_NAME/setup.py \
-    && git commit -m "Release $PROJECT_NAME-v$VERSION"
-    #  \
-    # && git tag $PROJECT_NAME-v$VERSION \
-    # && git push --tags origin master
+    && git commit -m "Release $PROJECT_NAME-v$VERSION" \
+    && git tag $PROJECT_NAME-v$VERSION \
+    && git push --tags origin master
   fi
 }
 
