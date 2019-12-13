@@ -28,54 +28,63 @@ if [ $# -eq 0 ]; then
   exit
 fi
 
+OPTION=$1
+VERSION=$2
 
 create_setup_cfg_file() {
+  printf "\n\nCREATE setup.cfg file\n"
   sed "s/lib_version/$1/g" $ROOT_DIR/$PROJECT_NAME/setup.template > $ROOT_DIR/$PROJECT_NAME/setup.py 
 }
 
 build_docker() {
-  echo "Build local version $FULL_IMAGE_NAME:latest"
-  echo ""
-  time docker build -t $FULL_IMAGE_NAME:latest --force-rm .
+  printf "\n\nBUILD local version $FULL_IMAGE_NAME:latest\n"
+  docker build -t $FULL_IMAGE_NAME:latest --force-rm .
 }
 
 lint_project() {
-  time docker run --rm -it  -v `pwd`/$PROJECT_NAME:/src $FULL_IMAGE_NAME:latest sh -c 'flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics && flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics'
+  printf "\n\nLINT project $PROJECT_NAME-v$VERSION\n"
+  docker run --rm -it  -v `pwd`/$PROJECT_NAME:/src $FULL_IMAGE_NAME:latest sh -c 'flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics && flake8 . --count  --max-complexity=10 --max-line-length=127 --statistics'
 }
 
 test_project() {
-  time docker run --rm -it  -v `pwd`/$PROJECT_NAME:/src $FULL_IMAGE_NAME:latest sh -c 'coverage run -m unittest tests/test_* && coverage report -m && python setup.py sdist' 
+  printf "\n\nTEST project $PROJECT_NAME-v$VERSION\n"
+  docker run --rm -it  -v `pwd`/$PROJECT_NAME:/src $FULL_IMAGE_NAME:latest sh -c 'coverage run -m unittest tests/test_* && echo $? && coverage report -m' 
 }
 
 build_project() {
-  time docker run --rm -it  -v `pwd`/$PROJECT_NAME:/src $FULL_IMAGE_NAME:latest sh -c 'python setup.py sdist' 
+  printf "\n\nBUILD project $PROJECT_NAME-v$VERSION\n"
+  docker run --rm -it  -v `pwd`/$PROJECT_NAME:/src $FULL_IMAGE_NAME:latest sh -c 'python setup.py sdist' 
 }
 
-create_setup_cfg_file $2
-build_docker
-lint_project
-test_project
-build_project
 
-if [[ "$1" == "-g" || "$1" == "-a" ]]
-then
-  echo ""
-  echo "GitHub: Pushing"
-  echo ""
-  git add setup.py
-  git commit -m "Release $PROJECT_NAME-v$2"
-  git tag $PROJECT_NAME-v$2
-  git push --tags origin master
-fi
+push_to_github() {
+  if [[ "$OPTION" == "-g" || "$OPTION" == "-a" ]]
+  then
+    printf "\n\n\nGitHub: Pushing\n"
+    git add $PROJECT_NAME/setup.py \
+    && git commit -m "Release $PROJECT_NAME-v$VERSION" \
+    && git tag $PROJECT_NAME-v$VERSION \
+    && git push --tags origin master
+  fi
+}
 
-if [[ "$1" == "-p" || "$1" == "-a" ]]
-then
-  echo ""
-  echo "PyPI Hub: Uploading"
-  echo ""
-  docker login
-  docker run --rm -it -v `pwd`:/src $FULL_IMAGE_NAME:latest twine upload dist/$PROJECT_NAME-$2.tar.gz
-fi
+send_to_pypi() {
+  if [[ "$OPTION" == "-p" || "$OPTION" == "-a" ]]
+  then
+    printf "\n\n\nPyPI Hub: Uploading\n"
+    docker run --rm -it -v `pwd`/$PROJECT_NAME:/src $FULL_IMAGE_NAME:latest twine upload dist/$PROJECT_NAME-$VERSION.tar.gz
+  fi
+}
 
+create_setup_cfg_file $VERSION \
+&& build_docker \
+&& lint_project \
+&& test_project \
+&& build_project \
+&& push_to_github 
+# \
+# && send_to_pypi
+
+echo $?
 echo ""
 echo "Done."
