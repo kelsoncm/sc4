@@ -50,6 +50,6 @@ def unzip_csv_content(content, file_id=0, encoding='utf-8', **kwargs):
     return [dict(row) for row in DictReader(csv_stream_content, **kwargs)]
 
 
-def unzip_fwf_content(content, file_descriptor, file_id=0, encoding='utf-8', newline="\n\r"):
-    _iterable = StringIO(unzip_content(content, file_id, encoding))
-    return [row for row in Reader(_iterable, file_descriptor, newline)]
+# def unzip_fwf_content(content, file_descriptor, file_id=0, encoding='utf-8', newline="\n\r"):
+#     _iterable = StringIO(unzip_content(content, file_id, encoding))
+#     return [row for row in Reader(_iterable, file_descriptor, newline)]

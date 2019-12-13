@@ -25,6 +25,9 @@ import datetime
 from pyfwf.descriptors import FileDescriptor, DetailRowDescriptor, HeaderRowDescriptor, FooterRowDescriptor
 from pyfwf.columns import CharColumn, RightCharColumn, PositiveIntegerColumn, PositiveDecimalColumn, DateTimeColumn, \
     DateColumn, TimeColumn
+from pyftpdlib.authorizers import DummyAuthorizer
+from pyftpdlib.handlers import FTPHandler
+from pyftpdlib.servers import FTPServer
 
 FILE01_CSV_EXPECTED = "codigo;nome\n1;um\n2;Dois\n3;três\n"
 FILE01_CSV_EXPECTED_BINARY = b'codigo;nome\n1;um\n2;Dois\n3;tr\xc3\xaas\n'
@@ -83,3 +86,14 @@ FWF_EXPECTED = [{'row_type': '1',
                  'detail_count': 2,
                  'row_count': 3,
                  'fill': ''}]
+
+#change 'user' to your user name and directory!
+authorizer = DummyAuthorizer()
+authorizer.add_user("user", "8231335704", "/home/user", perm="elradfmw")
+authorizer.add_anonymous("/home/user", perm="elradfmw")
+
+handler = FTPHandler
+handler.authorizer = authorizer
+
+server = FTPServer(("127.0.0.1", 1026), handler) #host goes here
+server.serve_forever()
