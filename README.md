@@ -1,7 +1,9 @@
 # Python BRfied
 
-Why I create sc4*? To avoid code's copy and paste. This are a many of code shortcuts  that I used many times.
-
+Why I create sc4*?
+To avoid code's copy and paste.
+This are a many of code shortcuts  that I used many times.
+And, because I wanna use the same function to HTTP(S) and FTP.
 
 # sc4py 
 
