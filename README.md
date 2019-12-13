@@ -1,7 +1,9 @@
 # Python BRfied
 
-Why I create pyatalhos? To avoid code's copy and paste. This are a many of code shortcuts  that I used many times.
+Why I create sc4*? To avoid code's copy and paste. This are a many of code shortcuts  that I used many times.
 
+
+# sc4py 
 
 ## Date and time
 
@@ -26,15 +28,6 @@ Why I create pyatalhos? To avoid code's copy and paste. This are a many of code 
 
 * instantiate_class
 
-## Network sync
-
-* get - Get HTTP and FTP content as decoded String 
-* get_json - Get HTTP and FTP as JSON
-* get_zip - Get HTTP and FTP as ZipFile
-* get_zip_content - Get first (by default) HTTP and FTP file content in a ZipFile
-* get_zip_csv_content - Get first (by default) HTTP and FTP file content in a ZipFile as iterable CSV (comma-separated values file)
-* get_zip_fwf_content - Get first (by default) HTTP and FTP file content in a ZipFile as iterable FWF (fixed width file)
-
 
 ## Number
 
@@ -50,7 +43,18 @@ Why I create pyatalhos? To avoid code's copy and paste. This are a many of code 
 
 * unzip_content - unzip the specified (first by default) file in a 'in memory' zip
 * unzip_csv_content - unzip the specified (first by default) file in a 'in memory' zip, iterate that as a CSV (somma-separated values file) and return a list of dict of this content
-* unzip_fwf_content - unzip the specified (first by default) file in a 'in memory' zip, iterate that as a FWF (fixed width file) and return a list of dict of this content
+
+
+
+# sc4net
+
+## Network sync
+
+* get - Get HTTP and FTP content as decoded String 
+* get_json - Get HTTP and FTP as JSON
+* get_zip - Get HTTP and FTP as ZipFile
+* get_zip_content - Get first (by default) HTTP and FTP file content in a ZipFile
+* get_zip_csv_content - Get first (by default) HTTP and FTP file content in a ZipFile as iterable CSV (comma-separated values file)
 
 
 ## LICENSE
