@@ -27,3 +27,13 @@ jobs:
         cd sc4py \
         && coverage run -m unittest tests/test_* \
         && coverage report -m
+    - name: sc4net - Lint with flake8 
+      run: |
+        cd sc4net \
+        && flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics \
+        && flake8 . --count --max-complexity=10 --max-line-length=127 --statistics
+    - name: sc4net - Test with pytest and coverage
+      run: |
+        cd sc4net \
+        && coverage run -m unittest tests/test_* \
+        && coverage report -m
