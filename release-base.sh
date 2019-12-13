@@ -48,7 +48,7 @@ lint_project() {
 
 test_project() {
   printf "\n\nTEST project $PROJECT_NAME-v$VERSION\n"
-  docker run --rm -it  -v `pwd`/$PROJECT_NAME:/src $FULL_IMAGE_NAME:latest sh -c 'coverage run -m unittest tests/test_* && echo $? && coverage report -m' 
+  docker run --rm -it  -v `pwd`/$PROJECT_NAME:/src $FULL_IMAGE_NAME:latest sh -c 'coverage run -m unittest tests/test_* && coverage report -m' 
 }
 
 build_project() {
