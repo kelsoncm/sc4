@@ -23,6 +23,7 @@
 
 requests-ftp==0.3.1
 requests==2.22.0
+sc4py==0.1.0
 
 # build
 coverage==4.5.4
