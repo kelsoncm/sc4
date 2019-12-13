@@ -3,8 +3,8 @@ from distutils.core import setup
 setup(
     name='pyatalhos',
     packages=['pyatalhos', ],
-    version='0.1.0',
-    download_url='https://github.com/kelsoncm/pyatalhos/releases/tag/0.1.0',
+    version='0.1.1',
+    download_url='https://github.com/kelsoncm/pyatalhos/releases/tag/0.1.1',
     description='Python library specific brazilian validations',
     author='Kelson da Costa Medeiros',
     author_email='kelsoncm@gmail.com',
@@ -13,4 +13,3 @@ setup(
     install_requires=['pyfwf==0.1.3', 'requests-ftp==0.3.1', 'requests==2.21.0'],
     classifiers=[]
 )
-

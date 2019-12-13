@@ -21,12 +21,12 @@
 #
 # @author 'Kelson da Costa Medeiros <kelsoncm@gmail.com>'
 
-# pyfwf==0.1.4
-# requests-ftp==0.3.1
-# requests==2.22.0
+pyfwf==0.1.4
+requests-ftp==0.3.1
+requests==2.22.0
 
 # build
-coverage==4.5.4
-twine==2.0.0
+coverage
+twine
 flake8
 pyftpdlib

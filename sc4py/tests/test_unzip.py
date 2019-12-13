@@ -23,8 +23,7 @@ SOFTWARE.
 """
 import os
 from unittest import TestCase
-from pyatalhos.zip import unzip_content, unzip_csv_content, FileNotFoundInZipError
-from tests import FWF_EXPECTED, FILE_DESCRIPTOR
+from sc4py.zip import unzip_content, unzip_csv_content, FileNotFoundInZipError
 
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -53,8 +52,3 @@ class TestPythonBrfiedInit(TestCase):
             content = unzip_csv_content(f.read(), delimiter=';')
             expected = [{"codigo": '1', 'nome': 'um'}, {"codigo": '2', 'nome': 'Dois'}, {"codigo": '3', 'nome': 'três'}]
             self.assertListEqual(expected, content)
-
-    # def test_unzip_fwf_content(self):
-    #     with open(dir_path + "/assets/example01_are_right.fwf.zip", "rb") as f:
-    #         content = unzip_fwf_content(f.read(), FILE_DESCRIPTOR, newline="\n")
-    #         self.assertListEqual(FWF_EXPECTED, content)

@@ -24,7 +24,6 @@ SOFTWARE.
 from zipfile import ZipFile
 from io import BytesIO, StringIO
 from csv import DictReader
-from pyfwf.readers import Reader
 
 
 class FileNotFoundInZipError(FileNotFoundError):
@@ -48,8 +47,3 @@ def unzip_content(content, file_id=0, encoding='utf-8'):
 def unzip_csv_content(content, file_id=0, encoding='utf-8', **kwargs):
     csv_stream_content = StringIO(unzip_content(content, file_id, encoding))
     return [dict(row) for row in DictReader(csv_stream_content, **kwargs)]
-
-
-# def unzip_fwf_content(content, file_descriptor, file_id=0, encoding='utf-8', newline="\n\r"):
-#     _iterable = StringIO(unzip_content(content, file_id, encoding))
-#     return [row for row in Reader(_iterable, file_descriptor, newline)]

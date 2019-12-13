@@ -22,11 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from unittest import TestCase
-from pyatalhos.number import percentage
+from sc4py.klass import instantiate_class
 
 
-class TestNumber(TestCase):
+class TestKlass(TestCase):
 
-    def test_percentage(self):
-        self.assertEqual(100, percentage(1, 1))
-        self.assertEqual(0.0, percentage(0, 0))
+    def test_instantiate_class(self):
+        from io import BytesIO
+        self.assertIsInstance(instantiate_class('io.BytesIO', None), BytesIO)
