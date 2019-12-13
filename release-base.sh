@@ -60,7 +60,7 @@ build_project() {
 push_to_github() {
   if [[ "$OPTION" == "-g" || "$OPTION" == "-a" ]]
   then
-    printf "\n\n\nGitHub: Pushing\n"
+    printf "\n\n\GITHUB: Pushing\n"
     git add $PROJECT_NAME/setup.py \
     && git commit -m "Release $PROJECT_NAME-v$VERSION" \
     && git tag $PROJECT_NAME-v$VERSION \
@@ -71,7 +71,7 @@ push_to_github() {
 send_to_pypi() {
   if [[ "$OPTION" == "-p" || "$OPTION" == "-a" ]]
   then
-    printf "\n\n\nPyPI Hub: Uploading\n"
+    printf "\n\n\PYPI: Uploading\n"
     docker run --rm -it -v `pwd`/$PROJECT_NAME:/src $FULL_IMAGE_NAME:latest twine upload dist/$PROJECT_NAME-$VERSION.tar.gz
   fi
 }
@@ -81,9 +81,8 @@ create_setup_cfg_file $VERSION \
 && lint_project \
 && test_project \
 && build_project \
-&& push_to_github 
-# \
-# && send_to_pypi
+&& push_to_github \
+&& send_to_pypi
 
 echo $?
 echo ""
