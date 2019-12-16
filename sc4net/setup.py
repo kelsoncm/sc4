@@ -4,7 +4,7 @@ from setuptools import setup
 setup(
     name='sc4net',
     packages=['sc4net', ],
-    version='0.0.0',
+    version='0.1.0',
     download_url='https://github.com/kelsoncm/pyatalhos/releases/tag/sc4net-v0.1.0',
     description='Shortcuts for user with requests and requests_ftp',
     author='Kelson da Costa Medeiros',
