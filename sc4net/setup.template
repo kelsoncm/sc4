@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from distutils.core import setup
+from setuptools import setup
+# from distutils.core import setup
 setup(
     name='sc4net',
     packages=['sc4net', ],
