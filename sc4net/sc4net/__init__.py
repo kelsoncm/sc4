@@ -30,6 +30,9 @@ import requests
 from sc4py.zip import unzip_content, unzip_csv_content
 
 
+default_headers = {}
+
+
 def requests_get(url, headers={}, encoding='utf-8', decode=True, **kwargs):
     if url.lower().startswith("ftp://"):
         response = ftp.FTPSession().get(url, **kwargs)
@@ -68,3 +71,40 @@ def get_zip_content(url, headers={}, file_id=0, encoding='utf-8', **kwargs):
 def get_zip_csv_content(url, headers={}, file_id=0, encoding='utf-8', unzip_kwargs={}, **kwargs):
     content = get(url, encoding=None, headers=headers, **kwargs)
     return unzip_csv_content(content, file_id=file_id, encoding=encoding, **unzip_kwargs)
+
+
+def post(url, data=None, json_data=None, headers={}, encoding='utf-8', decode=True, **kwargs):
+    response = requests.post(url, data, json_data, headers=headers.update(default_headers), **kwargs)
+
+    if response.ok:
+        byte_array_content = response.content
+        return byte_array_content.decode(encoding) if decode and encoding is not None else byte_array_content
+    else:
+        exc = HTTPException('%s - %s' % (response.status_code, response.reason))
+        exc.status = response.status_code
+        exc.reason = response.reason
+        exc.headers = response.headers
+        exc.url = url
+        raise exc
+
+
+def post_json(url, data=None, json_data=None, headers={}, encoding='utf-8', json_kwargs={}, **kwargs):
+    content = post(url, data, json_data, headers=headers, encoding=encoding, **kwargs)
+    print("content=[", content, "]")
+    return json.loads(content, **json_kwargs)
+
+
+def put(url, data=None, json_data=None, headers={}, encoding='utf-8', **kwargs):
+    raise NotImplementedError()
+
+
+def put_json(url, data=None, json_data=None, headers={}, encoding='utf-8', json_kwargs={}, **kwargs):
+    raise NotImplementedError()
+
+
+def delete(url, headers={}, encoding='utf-8', decode=True, **kwargs):
+    raise NotImplementedError()
+
+
+def delete_json(url, headers={}, encoding='utf-8', json_kwargs={}, **kwargs):
+    raise NotImplementedError()
