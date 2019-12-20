@@ -3,8 +3,8 @@ from distutils.core import setup
 setup(
     name='sc4py',
     packages=['sc4py', ],
-    version='0.1.0',
-    download_url='https://github.com/kelsoncm/sc4/releases/tag/sc4py-v0.1.0',
+    version='0.1.1',
+    download_url='https://github.com/kelsoncm/sc4/releases/tag/sc4py-v0.1.1',
     description='Python library specific brazilian validations',
     author='Kelson da Costa Medeiros',
     author_email='kelsoncm@gmail.com',
