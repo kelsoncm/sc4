@@ -41,3 +41,10 @@ def this_month():
 def others_months():
     t = this_month()
     return [m for m in range(1, 13) if m != t]
+
+
+def daterange(start, end, step=datetime.timedelta(1)):
+    curr = start
+    while curr < end:
+        yield curr
+        curr += step
