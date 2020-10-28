@@ -45,6 +45,6 @@ def others_months():
 
 def daterange(start, end, step=datetime.timedelta(1)):
     curr = start
-    while curr < end:
+    while curr <= end:
         yield curr
         curr += step
