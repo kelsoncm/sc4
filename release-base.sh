@@ -36,24 +36,19 @@ create_setup_cfg_file() {
   sed "s/lib_version/$1/g" $ROOT_DIR/$PROJECT_NAME/setup.template > $ROOT_DIR/$PROJECT_NAME/setup.py 
 }
 
-build_docker() {
-  printf "\n\nBUILD local version $FULL_IMAGE_NAME:latest\n"
-  docker build -t $FULL_IMAGE_NAME:latest --force-rm .
-}
-
 lint_project() {
   printf "\n\nLINT project $PROJECT_NAME-v$VERSION\n"
-  docker run --rm -it  -v `pwd`/$PROJECT_NAME:/src $FULL_IMAGE_NAME:latest sh -c 'flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics && flake8 . --count  --max-complexity=10 --max-line-length=127 --statistics'
+  docker run --rm -it  -v `pwd`:/src kelsoncm/release_to_pypi sh -c 'flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics && flake8 . --count  --max-complexity=10 --max-line-length=127 --statistics'
 }
 
 test_project() {
   printf "\n\nTEST project $PROJECT_NAME-v$VERSION\n"
-  docker run --rm -it  -v `pwd`/$PROJECT_NAME:/src $FULL_IMAGE_NAME:latest sh -c 'coverage run -m unittest tests/test_* && coverage report -m' 
+  docker run --rm -it  -v `pwd`:/src kelsoncm/release_to_pypi sh -c 'coverage run -m unittest tests/test_* && coverage report -m' 
 }
 
 build_project() {
   printf "\n\nBUILD project $PROJECT_NAME-v$VERSION\n"
-  docker run --rm -it  -v `pwd`/$PROJECT_NAME:/src $FULL_IMAGE_NAME:latest sh -c 'python setup.py sdist' 
+  docker run --rm -it  -v `pwd`:/src kelsoncm/release_to_pypi sh -c 'python setup.py sdist' 
 }
 
 
@@ -77,7 +72,6 @@ send_to_pypi() {
 }
 
 create_setup_cfg_file $VERSION \
-&& build_docker \
 && lint_project \
 && test_project \
 && build_project \
