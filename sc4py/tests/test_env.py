@@ -35,19 +35,40 @@ class TestPythonBrfiedEnv(TestCase):
         self.assertEqual("'aqui'", env('WRAPPED', 'ASDF'))
         self.assertEqual("aqui", env('WRAPPED', 'ASDF', True))
 
-    def test_env_as_list(self):
-
+    def test_env_as_list__using_str(self):
         self.assertListEqual([], env_as_list('DUMMY_ENV'))
         self.assertListEqual([], env_as_list('DUMMY_ENV', ''))
         self.assertListEqual([], env_as_list('DUMMY_ENV', ' '))
-
         self.assertListEqual(['a'], env_as_list('DUMMY_ENV', 'a'))
         self.assertListEqual(['a', 'b'], env_as_list('DUMMY_ENV', 'a,b'))
-
         self.assertListEqual(['a', 'b'], env_as_list('DUMMY_ENV', 'a;b', delimiter=';'))
-
         os.environ['ALIST'] = 'c,d'
         self.assertListEqual(['c', 'd'], env_as_list('ALIST', ''))
+        os.environ['ALIST'] = 'c;d'
+        self.assertListEqual(['c', 'd'], env_as_list('ALIST', '', delimiter=';'))
+
+    def test_env_as_list__using_none(self):
+        self.assertIsNone(env_as_list('DUMMY_ENV', None))
+
+    def test_env_as_list__using_list(self):
+        self.assertListEqual([], env_as_list('DUMMY_ENV', []))
+        self.assertListEqual(['a'], env_as_list('DUMMY_ENV', ['a']))
+        self.assertListEqual(['a', 'b'], env_as_list('DUMMY_ENV', ['a', 'b']))
+        self.assertListEqual(['a', 'b'], env_as_list('DUMMY_ENV', ['a', 'b'], delimiter=';'))
+        os.environ['ALIST'] = 'c,d'
+        self.assertListEqual(['c', 'd'], env_as_list('ALIST', ['c', 'd']))
+        os.environ['ALIST'] = 'c;d'
+        self.assertListEqual(['c', 'd'], env_as_list('ALIST', ['c', 'd'], delimiter=';'))
+
+    def test_env_as_list__using_tuple(self):
+        self.assertListEqual([], env_as_list('DUMMY_ENV', tuple()))
+        self.assertListEqual(['a'], env_as_list('DUMMY_ENV', tuple('a')))
+        self.assertListEqual(['a', 'b'], env_as_list('DUMMY_ENV', ('a', 'b')))
+        self.assertListEqual(['a', 'b'], env_as_list('DUMMY_ENV', ('a', 'b'), delimiter=';'))
+        os.environ['ALIST'] = 'c,d'
+        self.assertListEqual(['c', 'd'], env_as_list('ALIST', ('c', 'd')))
+        os.environ['ALIST'] = 'c;d'
+        self.assertListEqual(['c', 'd'], env_as_list('ALIST', ('c', 'd'), delimiter=';'))
 
     def test_env_as_list_of_maps(self):
         self.assertListEqual([], env_as_list_of_maps('DUMMY_ENV', 'K'))

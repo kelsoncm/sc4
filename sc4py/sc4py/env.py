@@ -25,7 +25,7 @@ __author__ = 'Kelson da Costa Medeiros <kelsoncm@gmail.com>'
 
 import json
 from os import getenv
-from sc4py.str import str2bool
+from .str import str2bool
 
 
 def env(name, default=None, wrapped=False):
@@ -37,9 +37,15 @@ def env(name, default=None, wrapped=False):
 
 def env_as_list(name, default='', delimiter=',', wrapped=False):
     result = env(name, default, wrapped)
-    if result.strip() == '' and default.strip() == '':
-        return []
-    return result.split(delimiter)
+    if result is None:
+        return None
+    if type(result) == str:
+        if result.strip() == '' and default.strip() == '':
+            return []
+        return result.split(delimiter)
+    if type(result) in (list, tuple):
+        return list(result)
+    raise TypeError("env_as_list requires str, list or tuple as default")
 
 
 def env_as_list_of_maps(name, key, default='', delimiter=',', wrapped=False):
