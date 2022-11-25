@@ -4,13 +4,13 @@ from setuptools import setup
 setup(
     name='sc4net',
     packages=['sc4net', ],
-    version='0.1.2',
-    download_url='https://github.com/kelsoncm/pyatalhos/releases/tag/sc4net-v0.1.2',
+    version='0.1.3',
+    download_url='https://github.com/kelsoncm/pyatalhos/releases/tag/sc4net-v0.1.3',
     description='Shortcuts for user with requests and requests_ftp',
     author='Kelson da Costa Medeiros',
     author_email='kelsoncm@gmail.com',
     url='https://github.com/kelsoncm/sc4',
     keywords=['shortcuts', 'requests', 'requests_ftp', ],
-    install_requires=['requests-ftp==0.3.1', 'requests==2.21.0'],
+    install_requires=['sc4py==0.1.4', 'requests-ftp==0.3.1', 'requests>=2.21.0'],
     classifiers=[]
 )
