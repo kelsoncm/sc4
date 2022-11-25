@@ -43,7 +43,7 @@ lint_project() {
 
 test_project() {
   printf "\n\nTEST project $PROJECT_NAME-v$VERSION\n"
-  docker run --rm -it  -v `pwd`:/src kelsoncm/release_to_pypi sh -c 'coverage run -m unittest tests/test_* && coverage report -m' 
+  docker run --rm -it  -v `pwd`:/src kelsoncm/release_to_pypi sh -c 'pip install -r requirements.txt && coverage run -m unittest tests/test_* && coverage report -m' 
 }
 
 build_project() {

@@ -104,7 +104,7 @@ class TestPythonBrfiedShortcutSyncHttp(TestCase):
         self.assertEqual(CSV_EXPECTED, get_zip_csv_content(self.file01_zip_url, unzip_kwargs={"delimiter": ';'}))
 
     def test_get_zip_content_ftp(self):
-        self.assertEqual(FILE01_CSV_EXPECTED, get_zip_content("ftp://localhost:2121/file01.ZIP"))
+        self.assertEqual(FILE01_CSV_EXPECTED, get_zip_content("ftp://localhost:2121/file01.zip"))
 
     def test_get_ftp(self):
         self.assertEqual("pong", get("ftp://localhost:2121/ping.txt"))
