@@ -1,4 +1,4 @@
-# Python BRfied
+# Shortcut functions for Python and Net (sc4)
 
 Why I create sc4*?
 To avoid code's copy and paste.
