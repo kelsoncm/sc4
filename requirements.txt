@@ -22,7 +22,7 @@
 # @author 'Kelson da Costa Medeiros <kelsoncm@gmail.com>'
 
 requests-ftp==0.3.1
-requests==2.31.0
+requests==2.32.0
 sc4py==0.1.0
 
 # test
