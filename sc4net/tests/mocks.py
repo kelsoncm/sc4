@@ -23,6 +23,7 @@ SOFTWARE.
 """
 
 import os
+import re
 import threading
 
 # import socket
@@ -76,8 +77,10 @@ class MockHttpServerRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         parts = self.path.split("/")
         filepath = parts[len(parts) - 1]
-        safe_filepath = os.path.basename(os.path.normpath(filepath))
-        if safe_filepath in ("", ".", ".."):
+        safe_filepath = os.path.basename(filepath)
+        if safe_filepath in ("", ".", "..") or not re.fullmatch(
+            r"[A-Za-z0-9._-]+", safe_filepath
+        ):
             self.send_error(404, FILE_NOT_FOUND_ERROR_MESSAGE)
             return
 
