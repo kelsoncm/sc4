@@ -17,8 +17,7 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-
-__author__ = 'Kelson da Costa Medeiros <kelsoncm@gmail.com>'
+__author__ = "Kelson da Costa Medeiros <kelsoncm@gmail.com>"
 
 
 from enum import Enum, EnumMeta
@@ -31,7 +30,7 @@ def to_choice(*args) -> list[tuple[Any, Any]]:
         if isinstance(x, EnumMeta):
             result.extend(to_choice(*[y for y in x]))
         elif isinstance(x, Enum):
-            result.append((x.value, getattr(x, 'description', x.value)))
+            result.append((x.value, getattr(x, "description", x.value)))
         else:
             result.append((x, x))
     return result

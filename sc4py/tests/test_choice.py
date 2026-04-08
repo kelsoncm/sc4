@@ -21,8 +21,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+
 from enum import Enum
 from unittest import TestCase
+
 from sc4py.choice import to_choice
 
 
@@ -33,8 +35,8 @@ class PlainEnum(Enum):
 
 class DescribedEnum(Enum):
     description: str
-    X = (10, 'ten')
-    Y = (20, 'twenty')
+    X = (10, "ten")
+    Y = (20, "twenty")
 
     def __new__(cls, value, description):
         obj = object.__new__(cls)
@@ -46,13 +48,13 @@ class DescribedEnum(Enum):
 class TestPythonBrfiedChoice(TestCase):
 
     def test_to_choice_from_plain_values(self):
-        self.assertEqual([('x', 'x'), (2, 2)], to_choice('x', 2))
+        self.assertEqual([("x", "x"), (2, 2)], to_choice("x", 2))
 
     def test_to_choice_from_plain_enum_class(self):
         self.assertEqual([(1, 1), (2, 2)], to_choice(PlainEnum))
 
     def test_to_choice_from_described_enum_class(self):
-        self.assertEqual([(10, 'ten'), (20, 'twenty')], to_choice(DescribedEnum))
+        self.assertEqual([(10, "ten"), (20, "twenty")], to_choice(DescribedEnum))
 
     def test_to_choice_from_enum_item(self):
-        self.assertEqual([(10, 'ten')], to_choice(DescribedEnum.X))
+        self.assertEqual([(10, "ten")], to_choice(DescribedEnum.X))

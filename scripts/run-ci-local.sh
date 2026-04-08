@@ -15,7 +15,7 @@ fi
 pushd "$ROOT_DIR" >/dev/null
 
 "$VENV_DIR/bin/black" . --check
-"$VENV_DIR/bin/isort" . --check-only
+"$VENV_DIR/bin/isort" . --profile black --check-only
 "$VENV_DIR/bin/bandit" -r .
 "$VENV_DIR/bin/flake8" sc4py --count --select=E9,F63,F7,F82 --show-source --statistics
 "$VENV_DIR/bin/flake8" sc4py --count --max-complexity=10 --max-line-length=127 --statistics

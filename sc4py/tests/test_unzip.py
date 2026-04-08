@@ -21,11 +21,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+
 import os
 from unittest import TestCase
 from unittest.mock import patch
-from sc4py.zip import unzip_content, unzip_csv_content, FileNotFoundInZipError
 
+from sc4py.zip import FileNotFoundInZipError, unzip_content, unzip_csv_content
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -34,26 +35,30 @@ class TestPythonBrfiedInit(TestCase):
 
     def test_unzip_content(self):
         expected = "codigo;nome\n1;um\n2;Dois\n3;três\n"
-        expected_binary = b'codigo;nome\n1;um\n2;Dois\n3;tr\xc3\xaas\n'
-        expected_latin1 = 'codigo;nome\n1;um\n2;Dois\n3;trÃªs\n'
+        expected_binary = b"codigo;nome\n1;um\n2;Dois\n3;tr\xc3\xaas\n"
+        expected_latin1 = "codigo;nome\n1;um\n2;Dois\n3;trÃªs\n"
         with open(dir_path + "/assets/file01.zip", "rb") as f:
             binary = f.read()
         self.assertEqual(expected, unzip_content(binary))
         self.assertEqual(expected, unzip_content(binary, 0))
-        self.assertEqual(expected, unzip_content(binary, 'file.csv'))
-        self.assertRaises(FileNotFoundInZipError, unzip_content, binary, 'file2.csv')
+        self.assertEqual(expected, unzip_content(binary, "file.csv"))
+        self.assertRaises(FileNotFoundInZipError, unzip_content, binary, "file2.csv")
         self.assertRaises(FileNotFoundInZipError, unzip_content, binary, 1)
 
         self.assertEqual(expected_binary, unzip_content(binary, encoding=None))
-        self.assertEqual(expected_latin1, unzip_content(binary, encoding='latin_1'))
-        self.assertRaises(UnicodeDecodeError, unzip_content, binary, encoding='ascii')
+        self.assertEqual(expected_latin1, unzip_content(binary, encoding="latin_1"))
+        self.assertRaises(UnicodeDecodeError, unzip_content, binary, encoding="ascii")
 
     def test_unzip_csv_content(self):
         with open(dir_path + "/assets/file01.zip", "rb") as f:
-            content = unzip_csv_content(f.read(), delimiter=';')
-            expected = [{"codigo": '1', 'nome': 'um'}, {"codigo": '2', 'nome': 'Dois'}, {"codigo": '3', 'nome': 'três'}]
+            content = unzip_csv_content(f.read(), delimiter=";")
+            expected = [
+                {"codigo": "1", "nome": "um"},
+                {"codigo": "2", "nome": "Dois"},
+                {"codigo": "3", "nome": "três"},
+            ]
             self.assertListEqual(expected, content)
 
     def test_unzip_csv_content_with_non_string_content(self):
-        with patch('sc4py.zip.unzip_content', return_value=123):
-            self.assertEqual([], unzip_csv_content(b'ignored'))
+        with patch("sc4py.zip.unzip_content", return_value=123):
+            self.assertEqual([], unzip_csv_content(b"ignored"))

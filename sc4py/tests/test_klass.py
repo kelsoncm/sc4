@@ -21,7 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+
 from unittest import TestCase
+
 from sc4py.klass import instantiate_class
 
 
@@ -29,4 +31,5 @@ class TestKlass(TestCase):
 
     def test_instantiate_class(self):
         from io import BytesIO
-        self.assertIsInstance(instantiate_class('io.BytesIO', None), BytesIO)
+
+        self.assertIsInstance(instantiate_class("io.BytesIO", None), BytesIO)

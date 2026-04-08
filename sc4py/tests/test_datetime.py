@@ -21,9 +21,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from unittest import TestCase
+
 from datetime import date, timedelta
-from sc4py.datetime import today, now, now_str, this_month, others_months, daterange
+from unittest import TestCase
+
+from sc4py.datetime import daterange, now, now_str, others_months, this_month, today
 
 
 class TestPythonBrfiedDatetime(TestCase):
@@ -46,5 +48,7 @@ class TestPythonBrfiedDatetime(TestCase):
         self.assertEqual([date(2026, 1, 1), date(2026, 1, 2), date(2026, 1, 3)], result)
 
     def test_daterange_custom_step(self):
-        result = list(daterange(date(2026, 1, 1), date(2026, 1, 5), step=timedelta(days=2)))
+        result = list(
+            daterange(date(2026, 1, 1), date(2026, 1, 5), step=timedelta(days=2))
+        )
         self.assertEqual([date(2026, 1, 1), date(2026, 1, 3), date(2026, 1, 5)], result)

@@ -21,16 +21,18 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+
 import os
 import threading
+
 # import socket
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
 from pyftpdlib.authorizers import DummyAuthorizer
 from pyftpdlib.handlers import FTPHandler
 from pyftpdlib.servers import FTPServer
 
-
-FILE_NOT_FOUND_ERROR_MESSAGE = 'File not found'
+FILE_NOT_FOUND_ERROR_MESSAGE = "File not found"
 
 
 dir_path = os.path.dirname(os.path.realpath(__file__)) + "/assets/"
@@ -46,7 +48,7 @@ def mock_ftpd():
     handler = FTPHandler
     handler.authorizer = authorizer
     handler.banner = "pyftpdlib based ftpd ready."
-    server = FTPServer(('', 2121), handler)
+    server = FTPServer(("", 2121), handler)
 
     # thread = threading.Thread(target=serve_ftpd_thread_function, kwargs={"server": server})
     thread = threading.Thread(target=server.serve_forever)
@@ -59,7 +61,9 @@ def mock_ftpd():
 class MockHttpServerRequestHandler(BaseHTTPRequestHandler):
 
     def __init__(self, request, client_address, server):
-        super(MockHttpServerRequestHandler, self).__init__(request, client_address, server)
+        super(MockHttpServerRequestHandler, self).__init__(
+            request, client_address, server
+        )
 
     def log_error(self, format, *args):
         pass
@@ -68,8 +72,8 @@ class MockHttpServerRequestHandler(BaseHTTPRequestHandler):
         pass
 
     def do_GET(self):
-        parts = self.path.split('/')
-        filepath = parts[len(parts)-1]
+        parts = self.path.split("/")
+        filepath = parts[len(parts) - 1]
         full_file_name = dir_path + filepath
 
         if not os.path.exists(full_file_name):
@@ -83,13 +87,13 @@ class MockHttpServerRequestHandler(BaseHTTPRequestHandler):
         return
 
     def do_POST(self):
-        parts = self.path.split('/')
-        filepath = parts[len(parts)-1]
+        parts = self.path.split("/")
+        filepath = parts[len(parts) - 1]
 
-        content_length = int(self.headers.get('Content-Length', '0'))
-        payload = self.rfile.read(content_length) if content_length > 0 else b''
+        content_length = int(self.headers.get("Content-Length", "0"))
+        payload = self.rfile.read(content_length) if content_length > 0 else b""
 
-        if filepath in ('echo', 'echo.json'):
+        if filepath in ("echo", "echo.json"):
             self.send_response(200)
             self.end_headers()
             self.wfile.write(payload)
@@ -111,7 +115,9 @@ def mock_httpd():
     # mock_http_server_port = get_free_port()
 
     mock_http_server_port = 1234
-    mock_http_server = HTTPServer(('localhost', mock_http_server_port), MockHttpServerRequestHandler)
+    mock_http_server = HTTPServer(
+        ("localhost", mock_http_server_port), MockHttpServerRequestHandler
+    )
 
     # Start running mock server in a separate thread.
     # Daemon threads automatically shut down when the main process exits.
@@ -119,4 +125,4 @@ def mock_httpd():
     thread.daemon = True
     thread.start()
 
-    return "http://%s:%d" % ('localhost', mock_http_server_port)
+    return "http://%s:%d" % ("localhost", mock_http_server_port)

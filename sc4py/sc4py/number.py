@@ -21,7 +21,7 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-__author__ = 'Kelson da Costa Medeiros <kelsoncm@gmail.com>'
+__author__ = "Kelson da Costa Medeiros <kelsoncm@gmail.com>"
 
 
 def percentage(num1: float, num2: float, precision: int = 2) -> float:

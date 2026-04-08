@@ -21,11 +21,11 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-__author__ = 'Kelson da Costa Medeiros <kelsoncm@gmail.com>'
+__author__ = "Kelson da Costa Medeiros <kelsoncm@gmail.com>"
 
 
-from datetime import date, datetime, timedelta
 from collections.abc import Generator
+from datetime import date, datetime, timedelta
 
 today = date.today
 now = datetime.now
@@ -44,7 +44,9 @@ def others_months() -> list[int]:
     return [m for m in range(1, 13) if m != t]
 
 
-def daterange(start: date, end: date, step: timedelta = timedelta(1)) -> Generator[date, None, None]:
+def daterange(
+    start: date, end: date, step: timedelta = timedelta(1)
+) -> Generator[date, None, None]:
     curr = start
     while curr <= end:
         yield curr

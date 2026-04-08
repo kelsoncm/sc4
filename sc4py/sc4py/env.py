@@ -21,26 +21,37 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-__author__ = 'Kelson da Costa Medeiros <kelsoncm@gmail.com>'
+__author__ = "Kelson da Costa Medeiros <kelsoncm@gmail.com>"
 
 import json
 from os import getenv
+
 from .str import str2bool
 
 
-def env(name: str, default=None, wrapped: bool = False) -> str|None:
+def env(name: str, default=None, wrapped: bool = False) -> str | None:
     result = getenv(name, default)
-    if wrapped and isinstance(result, str) and result[0:1] == "'" and result[-1:] == "'":
+    if (
+        wrapped
+        and isinstance(result, str)
+        and result[0:1] == "'"
+        and result[-1:] == "'"
+    ):
         return result[1:-1]
     return result
 
 
-def env_as_list(name: str, default: str|list[str] = '', delimiter: str = ',', wrapped: bool = False) -> list[str]|None:
+def env_as_list(
+    name: str,
+    default: str | list[str] = "",
+    delimiter: str = ",",
+    wrapped: bool = False,
+) -> list[str] | None:
     result = env(name, default, wrapped)
     if result is None:
         return None
     if type(result) == str:
-        if result.strip() == '' and isinstance(default, str) and default.strip() == '':
+        if result.strip() == "" and isinstance(default, str) and default.strip() == "":
             return []
         return result.split(delimiter)
     if type(result) in (list, tuple):
@@ -48,20 +59,26 @@ def env_as_list(name: str, default: str|list[str] = '', delimiter: str = ',', wr
     raise TypeError("env_as_list requires str, list or tuple as default")
 
 
-def env_as_list_of_maps(name: str, key: str, default: str|list[str] = '', delimiter: str = ',', wrapped: bool = False) -> list[dict]|None:
+def env_as_list_of_maps(
+    name: str,
+    key: str,
+    default: str | list[str] = "",
+    delimiter: str = ",",
+    wrapped: bool = False,
+) -> list[dict] | None:
     result = env_as_list(name, default, delimiter, wrapped)
     return [{key: x} for x in result] if result is not None else None
 
 
-def env_as_bool(name: str, default=None, wrapped: bool = False) -> bool|None:
+def env_as_bool(name: str, default=None, wrapped: bool = False) -> bool | None:
     return str2bool(env(name, default, wrapped))
 
 
-def env_from_json(key: str, default='', wrapped: bool = False) -> dict|list|None:
+def env_from_json(key: str, default="", wrapped: bool = False) -> dict | list | None:
     result = env(key, default, wrapped)
     return json.loads(result) if result is not None else result
 
 
-def env_as_int(key: str, default=None, wrapped: bool = False) -> int|None:
+def env_as_int(key: str, default=None, wrapped: bool = False) -> int | None:
     result = env(key, default, wrapped)
     return int(result) if result is not None else result
