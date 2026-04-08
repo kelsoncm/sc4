@@ -31,8 +31,8 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import unquote, urlencode, urlparse
 from urllib.request import Request, urlopen
 from zipfile import ZipFile
-
 from sc4py.zip import unzip_content, unzip_csv_content
+
 
 default_headers = {}
 
@@ -96,6 +96,30 @@ def _http_get_with_stdlib(url, headers=None, timeout=None) -> bytes:
         _raise_http_exception(exc.code, exc.reason, url, dict(exc.headers or {}))
     except URLError as exc:
         _raise_http_exception(502, str(exc.reason), url)
+
+
+def _build_post_payload(data, json_data, request_headers, encoding):
+
+    if json_data is not None:
+        payload = json.dumps(json_data).encode(encoding or "utf-8")
+        if "Content-Type" not in request_headers:
+            request_headers["Content-Type"] = "application/json"
+        return payload
+
+    if data is None:
+        return None
+
+    if isinstance(data, bytes):
+        return data
+    if isinstance(data, str):
+        return data.encode(encoding or "utf-8")
+    if isinstance(data, dict):
+        payload = urlencode(data, doseq=True).encode(encoding or "utf-8")
+        if "Content-Type" not in request_headers:
+            request_headers["Content-Type"] = "application/x-www-form-urlencoded"
+        return payload
+
+    return str(data).encode(encoding or "utf-8")
 
 
 def requests_get(
@@ -180,22 +204,7 @@ def post(
     request_headers = _merge_headers(headers)
     _validate_web_url(url)
 
-    payload = None
-    if json_data is not None:
-        payload = json.dumps(json_data).encode(encoding or "utf-8")
-        if "Content-Type" not in request_headers:
-            request_headers["Content-Type"] = "application/json"
-    elif data is not None:
-        if isinstance(data, bytes):
-            payload = data
-        elif isinstance(data, str):
-            payload = data.encode(encoding or "utf-8")
-        elif isinstance(data, dict):
-            payload = urlencode(data, doseq=True).encode(encoding or "utf-8")
-            if "Content-Type" not in request_headers:
-                request_headers["Content-Type"] = "application/x-www-form-urlencoded"
-        else:
-            payload = str(data).encode(encoding or "utf-8")
+    payload = _build_post_payload(data, json_data, request_headers, encoding)
 
     request = Request(url, data=payload, headers=request_headers, method="POST")
     try:
