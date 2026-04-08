@@ -16,7 +16,7 @@ Please do not open public issues for security vulnerabilities.
 
 Send a private report to:
 
-* kelsoncm@gmail.com
+* [kelsoncm@gmail.com](mailto:kelsoncm@gmail.com)
 
 Include as much detail as possible:
 
@@ -37,4 +37,5 @@ Target remediation timeline after severity confirmation:
 * Medium: up to 30 calendar days
 * Low: best effort, usually in the next regular release
 
-When a fix is available, a new package version will be published and release notes will describe the security update.
+When a fix is available, a new package version will be published and
+release notes will describe the security update.

@@ -38,7 +38,8 @@ code ~/projetos/PESSOAL/sc4
 
 ## Pre-commit
 
-This repository provides a pre-commit hook that runs CI-like quality and test checks locally.
+This repository provides a pre-commit hook that runs CI-like quality
+and test checks locally.
 
 Setup:
 
@@ -56,9 +57,9 @@ pre-commit run --all-files
 Notes:
 
 * The hook script creates `.venv` automatically if it does not exist.
-* It runs quality checks (black, isort, bandit, flake8, semgrep) and test suites for `sc4py` and `sc4net`.
+* It runs quality checks (black, isort, bandit, flake8, semgrep)
+	and test suites for `sc4py` and `sc4net`.
 * If available, it also runs shellcheck and markdownlint.
-
 ## License
 
 The MIT License (MIT)
