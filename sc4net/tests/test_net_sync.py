@@ -22,9 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from unittest import TestCase
+from unittest.mock import patch
 from zipfile import ZipFile, ZipInfo
 from http.client import HTTPException
-from sc4net import get, get_json, get_zip, get_zip_content, get_zip_csv_content
+from sc4net import get, get_json, get_zip, get_zip_content, get_zip_csv_content, post, post_json
 from .mocks import mock_httpd, mock_ftpd, FILE_NOT_FOUND_ERROR_MESSAGE
 
 
@@ -58,6 +59,8 @@ class TestPythonBrfiedShortcutSyncHttp(TestCase):
         self.file01_zip_url = http_root + "/file01.zip"
         self.file02_json_url = http_root + "/file02.json"
         self.file02_zip_url = http_root + "/file02.zip"
+        self.echo_url = http_root + "/echo"
+        self.echo_json_url = http_root + "/echo.json"
 
     @classmethod
     def setUpClass(cls):
@@ -108,3 +111,16 @@ class TestPythonBrfiedShortcutSyncHttp(TestCase):
 
     def test_get_ftp(self):
         self.assertEqual("pong", get("ftp://localhost:2121/ping.txt"))
+
+    def test_get_ftp_uses_stdlib(self):
+        with patch('sc4net._ftp_get_with_stdlib', return_value=b"pong") as ftp_get:
+            self.assertEqual("pong", get("ftp://localhost:2121/ping.txt"))
+            ftp_get.assert_called_once()
+
+    def test_post(self):
+        self.assertEqual('a=1&b=2', post(self.echo_url, data={'a': '1', 'b': '2'}))
+        self.assertEqual('hello', post(self.echo_url, data='hello'))
+        self.assertRaisesRegex(HTTPException, FILE_NOT_FOUND_ERROR_MESSAGE, post, self.file_not_found)
+
+    def test_post_json(self):
+        self.assertEqual({'name': 'kelson'}, post_json(self.echo_json_url, json_data={'name': 'kelson'}))

@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: ci-like-checks
+        name: Run CI-like quality and tests
+        entry: scripts/run-ci-local.sh
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]

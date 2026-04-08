@@ -30,10 +30,10 @@ class FileNotFoundInZipError(FileNotFoundError):
     pass
 
 
-def unzip_content(content, file_id=0, encoding='utf-8'):
+def unzip_content(content: bytes, file_id: int | str = 0, encoding: str = 'utf-8') -> str | bytes:
     with ZipFile(BytesIO(content)) as zip_file:
         try:
-            filename = file_id if type(file_id) == str else zip_file.filelist[file_id].filename
+            filename = file_id if isinstance(file_id, str) else zip_file.filelist[int(file_id)].filename
         except IndexError:
             raise FileNotFoundInZipError("Não existe arquivo no índice %d")
         try:
@@ -44,6 +44,9 @@ def unzip_content(content, file_id=0, encoding='utf-8'):
             raise FileNotFoundInZipError("Não existe arquivo com o nome %s" % filename)
 
 
-def unzip_csv_content(content, file_id=0, encoding='utf-8', **kwargs):
-    csv_stream_content = StringIO(unzip_content(content, file_id, encoding))
+def unzip_csv_content(content: bytes, file_id: int | str = 0, encoding: str = 'utf-8', **kwargs) -> list[dict]:
+    file_content = unzip_content(content, file_id, encoding)
+    if not isinstance(file_content, str):
+        file_content = file_content.decode(encoding) if isinstance(file_content, bytes) else str(file_content)
+    csv_stream_content = StringIO(file_content)
     return [dict(row) for row in DictReader(csv_stream_content, **kwargs)]

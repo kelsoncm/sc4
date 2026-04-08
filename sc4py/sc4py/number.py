@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 __author__ = 'Kelson da Costa Medeiros <kelsoncm@gmail.com>'
 
 
-def percentage(num1, num2, precision=2):
+def percentage(num1: float, num2: float, precision: int = 2) -> float:
     if num1 == 0 or num2 == 0:
         return float(0)
     else:

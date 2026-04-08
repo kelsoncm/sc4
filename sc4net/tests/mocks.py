@@ -50,7 +50,7 @@ def mock_ftpd():
 
     # thread = threading.Thread(target=serve_ftpd_thread_function, kwargs={"server": server})
     thread = threading.Thread(target=server.serve_forever)
-    thread.setDaemon(True)
+    thread.daemon = True
     thread.start()
 
     return server
@@ -82,6 +82,22 @@ class MockHttpServerRequestHandler(BaseHTTPRequestHandler):
             self.wfile.write(f.read())
         return
 
+    def do_POST(self):
+        parts = self.path.split('/')
+        filepath = parts[len(parts)-1]
+
+        content_length = int(self.headers.get('Content-Length', '0'))
+        payload = self.rfile.read(content_length) if content_length > 0 else b''
+
+        if filepath in ('echo', 'echo.json'):
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
+        self.send_error(404, FILE_NOT_FOUND_ERROR_MESSAGE)
+        return
+
 
 def mock_httpd():
     # https://realpython.com/testing-third-party-apis-with-mock-servers/
@@ -100,7 +116,7 @@ def mock_httpd():
     # Start running mock server in a separate thread.
     # Daemon threads automatically shut down when the main process exits.
     thread = threading.Thread(target=mock_http_server.serve_forever)
-    thread.setDaemon(True)
+    thread.daemon = True
     thread.start()
 
     return "http://%s:%d" % ('localhost', mock_http_server_port)

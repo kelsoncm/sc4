@@ -1,46 +1,68 @@
-# Shortcuts for Python
+# sc4py
 
-Why I create sc4py? To avoid code's copy and paste. This are a many of code shortcuts  that I used many times.
+Utilities for date/time, environment parsing, dynamic class loading, percentages, string-to-bool conversion, choice tuples, and in-memory ZIP reading.
 
+## Quick examples
 
-## Date and time
+```python
+from sc4py.datetime import now_str
+from sc4py.env import env_as_bool
+from sc4py.number import percentage
 
-* today - today date
-* now - date and time of this moment
-* now_str - date and time of this moment formatted as "%d-%m-%Y %H:%M:%S"
-* this_month - this month (a integer from 1 to 12)
-* others_months - a list of all monthts (a integer from 1 to 12), except this month
+print(now_str())
+print(env_as_bool("FEATURE_ENABLED", default="true"))
+print(percentage(45, 60))  # 75.0
+```
 
+## Date and time (`sc4py.datetime`)
 
-## Env
+* `today` - Alias for `date.today`
+* `now` - Alias for `datetime.now`
+* `now_str()` - Current datetime formatted as `%d-%m-%Y %H:%M:%S`
+* `this_month()` - Current month as integer (`1..12`)
+* `others_months()` - List of all months except current
+* `daterange(start, end, step=timedelta(1))` - Generator from `start` to `end` (inclusive)
 
-* env - the value of a environment variable as String
-* env_as_list - the value of a environment variable as List, comma is the default separator
-* env_as_list_of_maps - the value of a environment variable as List of Maps, comma is the default separator of maps
-* env_as_bool - the value of a environment variable as Boolean
-* env_as_int - the value of a environment variable as Integer
-* env_from_json - the value of a environment variable Python structure (lists and maps) considering the env as JSON
+## Environment helpers (`sc4py.env`)
 
+* `env(name, default=None, wrapped=False)` - Reads env var value; with `wrapped=True`, strips leading/trailing single quotes
+* `env_as_list(name, default='', delimiter=',', wrapped=False)` - Parses env var as list
+* `env_as_list_of_maps(name, key, default='', delimiter=',', wrapped=False)` - Parses env var as list of dicts with fixed key
+* `env_as_bool(name, default=None, wrapped=False)` - Parses env var to bool/None via `str2bool`
+* `env_as_int(name, default=None, wrapped=False)` - Parses env var to int/None
+* `env_from_json(name, default='', wrapped=False)` - Parses env var as JSON
 
-## Class manipulation
+## Class helper (`sc4py.klass`)
 
-* instantiate_class
+* `instantiate_class(full_class_name, *args, **kwargs)` - Dynamic import and instantiation from dotted path
 
+## Number helper (`sc4py.number`)
 
-## Number
+* `percentage(num1, num2, precision=2)` - Returns `num1 / num2 * 100` rounded by precision; returns `0.0` if any value is zero
 
-* percentage - Percentage of num2 of num1 width fixed precision (default 2)
+## String helper (`sc4py.str`)
 
+* `str2bool(v)` - Converts bool-like values to `True`/`False`/`None`
+* Accepted true strings: `true`, `verdade`, `yes`, `sim`, `t`, `v`, `y`, `s`, `1`
+* Accepted false strings: `false`, `falso`, `no`, `nao`, `não`, `f`, `n`, `0`
 
-## String 
+## Choice helper (`sc4py.choice`)
 
-* str2bool - Cast 'true', 'verdade', 'yes', 'sim', 't', 'v', 'y', 's', '1', 'false', 'falso', 'no', 'nao', 'não', 'f', 'n' and '0' to Boolean
+* `to_choice(*args)` - Converts enums/values to list of `(value, label)` tuples
+* If enum item has `description`, uses it as label; otherwise uses `value`
 
+## ZIP helpers (`sc4py.zip`)
 
-## ZIP
+* `unzip_content(content, file_id=0, encoding='utf-8')` - Reads one file from ZIP bytes in memory by index (`int`) or filename (`str`), returning decoded `str` (or raw `bytes` when `encoding=None`)
+* `unzip_csv_content(content, file_id=0, encoding='utf-8', **kwargs)` - Reads CSV from ZIP and returns `list[dict]`
+* Raises `FileNotFoundInZipError` when file index/name is not found
 
-* unzip_content - unzip the specified (first by default) file in a 'in memory' zip
-* unzip_csv_content - unzip the specified (first by default) file in a 'in memory' zip, iterate that as a CSV (somma-separated values file) and return a list of dict of this content
+```python
+from sc4py.zip import unzip_csv_content
+
+rows = unzip_csv_content(zip_bytes, file_id=0)
+print(rows[0])
+```
 
 
 ## LICENSE

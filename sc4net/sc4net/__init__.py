@@ -22,89 +22,176 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 import json
+from ftplib import FTP
 from io import BytesIO
+from typing import Optional, NoReturn, cast
+from urllib.parse import urlparse, unquote, urlencode
+from urllib.request import Request, urlopen
+from urllib.error import HTTPError, URLError
 from zipfile import ZipFile
 from http.client import HTTPException
-from requests_ftp import ftp
-import requests
 from sc4py.zip import unzip_content, unzip_csv_content
 
 
 default_headers = {}
 
 
-def requests_get(url, headers={}, encoding='utf-8', decode=True, **kwargs):
-    if url.lower().startswith("ftp://"):
-        response = ftp.FTPSession().get(url, **kwargs)
-    else:
-        response = requests.get(url, headers=headers, **kwargs)
+def _raise_http_exception(status, reason, url, headers=None) -> NoReturn:
+    exc = HTTPException('%s - %s' % (status, reason))
+    setattr(exc, 'status', status)
+    setattr(exc, 'reason', reason)
+    setattr(exc, 'headers', headers or {})
+    setattr(exc, 'url', url)
+    raise exc
 
-    if response.ok:
-        byte_array_content = response.content
-        return byte_array_content.decode(encoding) if decode and encoding is not None else byte_array_content
+
+def _merge_headers(headers):
+    result = dict(default_headers)
+    if headers:
+        result.update(headers)
+    return result
+
+
+def _ftp_get_with_stdlib(url, timeout=None) -> bytes:
+    parsed = urlparse(url)
+    host = parsed.hostname
+    if host is None:
+        _raise_http_exception(400, 'Invalid FTP URL', url)
+
+    port = parsed.port or 21
+    username = unquote(parsed.username) if parsed.username else 'anonymous'
+    password = unquote(parsed.password) if parsed.password else 'anonymous@'
+    filepath = unquote(parsed.path.lstrip('/'))
+    if filepath == '':
+        _raise_http_exception(400, 'FTP file path is required', url)
+
+    try:
+        with FTP() as ftp_client:
+            if timeout is None:
+                ftp_client.connect(host=host, port=port)
+            else:
+                ftp_client.connect(host=host, port=port, timeout=float(timeout))
+            ftp_client.login(user=username, passwd=password)
+            output = BytesIO()
+            ftp_client.retrbinary('RETR %s' % filepath, output.write)
+            return output.getvalue()
+    except Exception as exc:
+        _raise_http_exception(502, str(exc), url)
+
+
+def _http_get_with_stdlib(url, headers=None, timeout=None) -> bytes:
+    request = Request(url, headers=_merge_headers(headers))
+    try:
+        with urlopen(request, timeout=timeout) as response:
+            return response.read()
+    except HTTPError as exc:
+        _raise_http_exception(exc.code, exc.reason, url, dict(exc.headers or {}))
+    except URLError as exc:
+        _raise_http_exception(502, str(exc.reason), url)
+
+
+def requests_get(url, headers=None, encoding: Optional[str] = 'utf-8', decode=True, **kwargs):
+    timeout = kwargs.get('timeout')
+    if url.lower().startswith("ftp://"):
+        byte_array_content = _ftp_get_with_stdlib(url, timeout=timeout)
     else:
-        exc = HTTPException('%s - %s' % (response.status_code, response.reason))
-        exc.status = response.status_code
-        exc.reason = response.reason
-        exc.headers = response.headers
-        exc.url = url
-        raise exc
+        byte_array_content = _http_get_with_stdlib(url, headers=headers, timeout=timeout)
+
+    return byte_array_content.decode(encoding) if decode and encoding is not None else byte_array_content
 
 
 get = requests_get
 
 
-def get_json(url, headers={}, encoding='utf-8', json_kwargs={}, **kwargs):
-    content = get(url, headers=headers, encoding=encoding, **kwargs)
-    return json.loads(content, **json_kwargs)
+def get_json(url, headers=None, encoding='utf-8', json_kwargs=None, **kwargs):
+    content = cast(str | bytes | bytearray, get(url, headers=headers, encoding=encoding, **kwargs))
+    if not isinstance(content, (str, bytes, bytearray)):
+        _raise_http_exception(500, 'JSON content must be text or bytes', url)
+    if isinstance(content, bytearray):
+        content = bytes(content)
+    return json.loads(content, **(json_kwargs or {}))
 
 
-def get_zip(url, headers={}, **kwargs):
-    return ZipFile(BytesIO(get(url, headers, encoding=None, **kwargs)))
+def get_zip(url, headers=None, **kwargs):
+    content = cast(bytes | bytearray, get(url, headers=headers, encoding=None, **kwargs))
+    if not isinstance(content, (bytes, bytearray)):
+        _raise_http_exception(500, 'ZIP content must be bytes', url)
+    if isinstance(content, bytearray):
+        content = bytes(content)
+    return ZipFile(BytesIO(content))
 
 
-def get_zip_content(url, headers={}, file_id=0, encoding='utf-8', **kwargs):
-    content = get(url, encoding=None, headers=headers, **kwargs)
+def get_zip_content(url, headers=None, file_id=0, encoding='utf-8', **kwargs):
+    content = cast(bytes | bytearray, get(url, encoding=None, headers=headers, **kwargs))
+    if not isinstance(content, (bytes, bytearray)):
+        _raise_http_exception(500, 'ZIP content must be bytes', url)
+    if isinstance(content, bytearray):
+        content = bytes(content)
     return unzip_content(content, file_id=file_id, encoding=encoding)
 
 
-def get_zip_csv_content(url, headers={}, file_id=0, encoding='utf-8', unzip_kwargs={}, **kwargs):
-    content = get(url, encoding=None, headers=headers, **kwargs)
-    return unzip_csv_content(content, file_id=file_id, encoding=encoding, **unzip_kwargs)
+def get_zip_csv_content(url, headers=None, file_id=0, encoding='utf-8', unzip_kwargs=None, **kwargs):
+    content = cast(bytes | bytearray, get(url, encoding=None, headers=headers, **kwargs))
+    if not isinstance(content, (bytes, bytearray)):
+        _raise_http_exception(500, 'ZIP content must be bytes', url)
+    if isinstance(content, bytearray):
+        content = bytes(content)
+    return unzip_csv_content(content, file_id=file_id, encoding=encoding, **(unzip_kwargs or {}))
 
 
-def post(url, data=None, json_data=None, headers={}, encoding='utf-8', decode=True, **kwargs):
-    response = requests.post(url, data, json_data, headers=headers.update(default_headers), **kwargs)
+def post(url, data=None, json_data=None, headers=None, encoding='utf-8', decode=True, **kwargs):
+    timeout = kwargs.get('timeout')
+    request_headers = _merge_headers(headers)
 
-    if response.ok:
-        byte_array_content = response.content
-        return byte_array_content.decode(encoding) if decode and encoding is not None else byte_array_content
-    else:
-        exc = HTTPException('%s - %s' % (response.status_code, response.reason))
-        exc.status = response.status_code
-        exc.reason = response.reason
-        exc.headers = response.headers
-        exc.url = url
-        raise exc
+    payload = None
+    if json_data is not None:
+        payload = json.dumps(json_data).encode(encoding or 'utf-8')
+        if 'Content-Type' not in request_headers:
+            request_headers['Content-Type'] = 'application/json'
+    elif data is not None:
+        if isinstance(data, bytes):
+            payload = data
+        elif isinstance(data, str):
+            payload = data.encode(encoding or 'utf-8')
+        elif isinstance(data, dict):
+            payload = urlencode(data, doseq=True).encode(encoding or 'utf-8')
+            if 'Content-Type' not in request_headers:
+                request_headers['Content-Type'] = 'application/x-www-form-urlencoded'
+        else:
+            payload = str(data).encode(encoding or 'utf-8')
+
+    request = Request(url, data=payload, headers=request_headers, method='POST')
+    try:
+        with urlopen(request, timeout=timeout) as response:
+            byte_array_content = response.read()
+    except HTTPError as exc:
+        _raise_http_exception(exc.code, exc.reason, url, dict(exc.headers or {}))
+    except URLError as exc:
+        _raise_http_exception(502, str(exc.reason), url)
+
+    return byte_array_content.decode(encoding) if decode and encoding is not None else byte_array_content
 
 
-def post_json(url, data=None, json_data=None, headers={}, encoding='utf-8', json_kwargs={}, **kwargs):
-    content = post(url, data, json_data, headers=headers, encoding=encoding, **kwargs)
-    print("content=[", content, "]")
-    return json.loads(content, **json_kwargs)
+def post_json(url, data=None, json_data=None, headers=None, encoding='utf-8', json_kwargs=None, **kwargs):
+    content = cast(str | bytes | bytearray, post(url, data, json_data, headers=headers, encoding=encoding, **kwargs))
+    if not isinstance(content, (str, bytes, bytearray)):
+        _raise_http_exception(500, 'JSON content must be text or bytes', url)
+    if isinstance(content, bytearray):
+        content = bytes(content)
+    return json.loads(content, **(json_kwargs or {}))
 
 
-def put(url, data=None, json_data=None, headers={}, encoding='utf-8', **kwargs):
+def put(url, data=None, json_data=None, headers=None, encoding='utf-8', **kwargs):
     raise NotImplementedError()
 
 
-def put_json(url, data=None, json_data=None, headers={}, encoding='utf-8', json_kwargs={}, **kwargs):
+def put_json(url, data=None, json_data=None, headers=None, encoding='utf-8', json_kwargs=None, **kwargs):
     raise NotImplementedError()
 
 
-def delete(url, headers={}, encoding='utf-8', decode=True, **kwargs):
+def delete(url, headers=None, encoding='utf-8', decode=True, **kwargs):
     raise NotImplementedError()
 
 
-def delete_json(url, headers={}, encoding='utf-8', json_kwargs={}, **kwargs):
+def delete_json(url, headers=None, encoding='utf-8', json_kwargs=None, **kwargs):
     raise NotImplementedError()

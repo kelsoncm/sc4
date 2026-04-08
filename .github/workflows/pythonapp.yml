@@ -1,39 +1,213 @@
-name: Python application
+name: Python CI and PyPI Deploy
 
-on: [push]
+on:
+  push:
+    branches:
+      - "**"
+    tags:
+      - "sc4py-v*"
+      - "sc4net-v*"
+  pull_request:
+  schedule:
+    - cron: "0 6 * * 1"
 
 jobs:
-  build:
-
-    runs-on: ubuntu-16.04
+  quality:
+    runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v1
-      with:
-        python-version: 3.7
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-    - name: sc4py - Lint with flake8 
-      run: |
-        cd sc4py \
-        && flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics \
-        && flake8 . --count --max-complexity=10 --max-line-length=127 --statistics
-    - name: sc4py - Test with pytest and coverage
-      run: |
-        cd sc4py \
-        && coverage run -m unittest tests/test_* \
-        && coverage report -m
-    - name: sc4net - Lint with flake8 
-      run: |
-        cd sc4net \
-        && flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics \
-        && flake8 . --count --max-complexity=10 --max-line-length=127 --statistics
-    - name: sc4net - Test with pytest and coverage
-      run: |
-        cd sc4net \
-        && coverage run -m unittest tests/test_* \
-        && coverage report -m
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install quality dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install black isort bandit
+
+      - name: Check Python formatting (black + isort)
+        run: |
+          black . --check
+          isort . --check-only
+
+      - name: Run Bandit SAST
+        run: bandit -r .
+
+      - name: Lint Markdown
+        uses: DavidAnson/markdownlint-cli2-action@v19
+
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@2.0.0
+
+      - name: Run Semgrep SAST
+        if: github.event_name == 'pull_request' || github.event_name == 'schedule'
+        uses: semgrep/semgrep-action@v1
+        with:
+          config: p/ci
+
+  test:
+    runs-on: ubuntu-latest
+    needs: quality
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install CI tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install coverage flake8
+
+      - name: Install project dependencies
+        run: |
+          pip install pyftpdlib
+          pip install -e ./sc4py -e ./sc4net
+
+      - name: sc4py - Lint with flake8
+        working-directory: sc4py
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --max-complexity=10 --max-line-length=127 --statistics
+
+      - name: sc4py - Test with coverage
+        working-directory: sc4py
+        run: |
+          coverage run -m unittest tests/test_*
+          coverage report -m
+          coverage xml -o coverage.xml
+
+      - name: sc4net - Lint with flake8
+        working-directory: sc4net
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --max-complexity=10 --max-line-length=127 --statistics
+
+      - name: sc4net - Test with coverage
+        working-directory: sc4net
+        run: |
+          coverage run -m unittest tests/test_*
+          coverage report -m
+          coverage xml -o coverage.xml
+
+      - name: Upload coverage artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports-py${{ matrix.python-version }}
+          path: |
+            sc4py/coverage.xml
+            sc4net/coverage.xml
+          if-no-files-found: error
+
+      - name: Upload sc4py coverage to Codecov
+        if: github.event_name == 'push' || github.event_name == 'schedule'
+        uses: codecov/codecov-action@v5
+        with:
+          files: sc4py/coverage.xml
+          flags: sc4py,py${{ matrix.python-version }}
+          fail_ci_if_error: false
+
+      - name: Upload sc4net coverage to Codecov
+        if: github.event_name == 'push' || github.event_name == 'schedule'
+        uses: codecov/codecov-action@v5
+        with:
+          files: sc4net/coverage.xml
+          flags: sc4net,py${{ matrix.python-version }}
+          fail_ci_if_error: false
+
+      - name: Publish coverage summary
+        run: |
+          python - <<'PY'
+          import xml.etree.ElementTree as ET
+          import os
+
+          def line_rate(path):
+              root = ET.parse(path).getroot()
+              return float(root.attrib.get("line-rate", 0.0)) * 100
+
+          sc4py_cov = line_rate("sc4py/coverage.xml")
+          sc4net_cov = line_rate("sc4net/coverage.xml")
+          py_version = os.environ.get("PY_VERSION", "unknown")
+
+          summary = "\n".join(
+              [
+              f"## Coverage Summary (Python {py_version})",
+                  "",
+                  "| Package | Line Coverage |",
+                  "|---|---:|",
+                  f"| sc4py | {sc4py_cov:.2f}% |",
+                  f"| sc4net | {sc4net_cov:.2f}% |",
+              ]
+          )
+
+          with open("$GITHUB_STEP_SUMMARY", "a", encoding="utf-8") as fp:
+              fp.write(summary + "\n")
+          PY
+        env:
+          PY_VERSION: ${{ matrix.python-version }}
+
+  deploy-sc4py:
+    runs-on: ubuntu-latest
+    needs: test
+    if: startsWith(github.ref, 'refs/tags/sc4py-v')
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Build sc4py package
+        working-directory: sc4py
+        run: |
+          python -m pip install --upgrade pip
+          pip install build
+          python -m build
+
+      - name: Publish sc4py to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: sc4py/dist/
+
+  deploy-sc4net:
+    runs-on: ubuntu-latest
+    needs: test
+    if: startsWith(github.ref, 'refs/tags/sc4net-v')
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Build sc4net package
+        working-directory: sc4net
+        run: |
+          python -m pip install --upgrade pip
+          pip install build
+          python -m build
+
+      - name: Publish sc4net to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: sc4net/dist/

@@ -1,65 +1,65 @@
-# Shortcut functions for Python and Net (sc4)
+# sc4
 
-Why I create sc4*?
-To avoid code's copy and paste.
-This are a many of code shortcuts  that I used many times.
-And, because I wanna use the same function to HTTP(S) and FTP.
+[![Python CI and PyPI Deploy](https://github.com/kelsoncm/sc4/actions/workflows/pythonapp.yml/badge.svg)](https://github.com/kelsoncm/sc4/actions/workflows/pythonapp.yml)
+![PyPI - sc4py Version](https://img.shields.io/pypi/v/sc4py)
+![PyPI - sc4net Version](https://img.shields.io/pypi/v/sc4net)
+[![Coverage - sc4py](https://codecov.io/gh/kelsoncm/sc4/graph/badge.svg?flag=sc4py)](https://codecov.io/gh/kelsoncm/sc4)
+[![Coverage - sc4net](https://codecov.io/gh/kelsoncm/sc4/graph/badge.svg?flag=sc4net)](https://codecov.io/gh/kelsoncm/sc4)
 
-# sc4py 
+Monorepo with two Python packages:
 
-## Date and time
+* `sc4py` - Python utility helpers
+* `sc4net` - HTTP(S)/FTP network helpers
 
-* today - today date
-* now - date and time of this moment
-* now_str - date and time of this moment formatted as "%d-%m-%Y %H:%M:%S"
-* this_month - this month (a integer from 1 to 12)
-* others_months - a list of all monthts (a integer from 1 to 12), except this month
+## Package documentation
 
+* `sc4py`: [sc4py/README](sc4py/README)
+* `sc4net`: [sc4net/README](sc4net/README)
 
-## Env
+## Installation
 
-* env - the value of a environment variable as String
-* env_as_list - the value of a environment variable as List, comma is the default separator
-* env_as_list_of_maps - the value of a environment variable as List of Maps, comma is the default separator of maps
-* env_as_bool - the value of a environment variable as Boolean
-* env_as_int - the value of a environment variable as Integer
-* env_from_json - the value of a environment variable Python structure (lists and maps) considering the env as JSON
+Install each package independently from PyPI:
 
+```bash
+pip install sc4py
+pip install sc4net
+```
 
-## Class manipulation
+## Security
 
-* instantiate_class
+Please report vulnerabilities according to [SECURITY.md](SECURITY.md).
 
+## How to contribute
 
-## Number
+```bash
+git clone git@github.com:kelsoncm/sc4.git ~/projetos/PESSOAL/sc4
+code ~/projetos/PESSOAL/sc4
+```
 
-* percentage - Percentage of num2 of num1 width fixed precision (default 2)
+## Pre-commit
 
+This repository provides a pre-commit hook that runs CI-like quality and test checks locally.
 
-## String 
+Setup:
 
-* str2bool - Cast 'true', 'verdade', 'yes', 'sim', 't', 'v', 'y', 's', '1', 'false', 'falso', 'no', 'nao', 'não', 'f', 'n' and '0' to Boolean
+```bash
+python3 -m pip install pre-commit
+pre-commit install
+```
 
+Run manually:
 
-## ZIP
+```bash
+pre-commit run --all-files
+```
 
-* unzip_content - unzip the specified (first by default) file in a 'in memory' zip
-* unzip_csv_content - unzip the specified (first by default) file in a 'in memory' zip, iterate that as a CSV (somma-separated values file) and return a list of dict of this content
+Notes:
 
+* The hook script creates `.venv` automatically if it does not exist.
+* It runs quality checks (black, isort, bandit, flake8, semgrep) and test suites for `sc4py` and `sc4net`.
+* If available, it also runs shellcheck and markdownlint.
 
-
-# sc4net
-
-## Network sync
-
-* get - Get HTTP and FTP content as decoded String 
-* get_json - Get HTTP and FTP as JSON
-* get_zip - Get HTTP and FTP as ZipFile
-* get_zip_content - Get first (by default) HTTP and FTP file content in a ZipFile
-* get_zip_csv_content - Get first (by default) HTTP and FTP file content in a ZipFile as iterable CSV (comma-separated values file)
-
-
-## LICENSE
+## License
 
 The MIT License (MIT)
 

@@ -21,30 +21,38 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from enum import Enum
 from unittest import TestCase
-from datetime import date, timedelta
-from sc4py.datetime import today, now, now_str, this_month, others_months, daterange
+from sc4py.choice import to_choice
 
 
-class TestPythonBrfiedDatetime(TestCase):
+class PlainEnum(Enum):
+    A = 1
+    B = 2
 
-    def test_today(self):
-        self.assertEqual(date.today(), today())
 
-    def test_now_str(self):
-        self.assertEqual(now().strftime("%d-%m-%Y %H:%M:%S"), now_str())
+class DescribedEnum(Enum):
+    description: str
+    X = (10, 'ten')
+    Y = (20, 'twenty')
 
-    def test_this_month(self):
-        self.assertEqual(now().month, this_month())
+    def __new__(cls, value, description):
+        obj = object.__new__(cls)
+        obj._value_ = value
+        obj.description = description
+        return obj
 
-    def test_others_months(self):
-        t = this_month()
-        self.assertEqual([m for m in range(1, 13) if m != t], others_months())
 
-    def test_daterange_default_step(self):
-        result = list(daterange(date(2026, 1, 1), date(2026, 1, 3)))
-        self.assertEqual([date(2026, 1, 1), date(2026, 1, 2), date(2026, 1, 3)], result)
+class TestPythonBrfiedChoice(TestCase):
 
-    def test_daterange_custom_step(self):
-        result = list(daterange(date(2026, 1, 1), date(2026, 1, 5), step=timedelta(days=2)))
-        self.assertEqual([date(2026, 1, 1), date(2026, 1, 3), date(2026, 1, 5)], result)
+    def test_to_choice_from_plain_values(self):
+        self.assertEqual([('x', 'x'), (2, 2)], to_choice('x', 2))
+
+    def test_to_choice_from_plain_enum_class(self):
+        self.assertEqual([(1, 1), (2, 2)], to_choice(PlainEnum))
+
+    def test_to_choice_from_described_enum_class(self):
+        self.assertEqual([(10, 'ten'), (20, 'twenty')], to_choice(DescribedEnum))
+
+    def test_to_choice_from_enum_item(self):
+        self.assertEqual([(10, 'ten')], to_choice(DescribedEnum.X))

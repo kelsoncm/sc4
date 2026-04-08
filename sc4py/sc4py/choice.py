@@ -22,17 +22,16 @@ __author__ = 'Kelson da Costa Medeiros <kelsoncm@gmail.com>'
 
 
 from enum import Enum, EnumMeta
+from typing import Any
 
 
-def to_choice(*args):
+def to_choice(*args) -> list[tuple[Any, Any]]:
     result = []
     for x in args:
         if isinstance(x, EnumMeta):
-            result += to_choice(*[y for y in x])
-        elif isinstance(x, Enum) and hasattr(x, 'description'):
-            result += [(x.value, x.description)]
-        elif isinstance(x, Enum) and not hasattr(x, 'description'):
-            result += [(x.value, x.value)]
+            result.extend(to_choice(*[y for y in x]))
+        elif isinstance(x, Enum):
+            result.append((x.value, getattr(x, 'description', x.value)))
         else:
-            result += [(x, x)]
+            result.append((x, x))
     return result

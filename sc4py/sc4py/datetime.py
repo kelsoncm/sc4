@@ -24,26 +24,27 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 __author__ = 'Kelson da Costa Medeiros <kelsoncm@gmail.com>'
 
 
-import datetime
+from datetime import date, datetime, timedelta
+from collections.abc import Generator
 
-today = datetime.date.today
-now = datetime.datetime.now
+today = date.today
+now = datetime.now
 
 
-def now_str():
+def now_str() -> str:
     return now().strftime("%d-%m-%Y %H:%M:%S")
 
 
-def this_month():
+def this_month() -> int:
     return now().month
 
 
-def others_months():
+def others_months() -> list[int]:
     t = this_month()
     return [m for m in range(1, 13) if m != t]
 
 
-def daterange(start, end, step=datetime.timedelta(1)):
+def daterange(start: date, end: date, step: timedelta = timedelta(1)) -> Generator[date, None, None]:
     curr = start
     while curr <= end:
         yield curr

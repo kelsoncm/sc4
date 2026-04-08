@@ -23,6 +23,7 @@ SOFTWARE.
 """
 import os
 from unittest import TestCase
+from unittest.mock import patch
 from sc4py.zip import unzip_content, unzip_csv_content, FileNotFoundInZipError
 
 
@@ -52,3 +53,7 @@ class TestPythonBrfiedInit(TestCase):
             content = unzip_csv_content(f.read(), delimiter=';')
             expected = [{"codigo": '1', 'nome': 'um'}, {"codigo": '2', 'nome': 'Dois'}, {"codigo": '3', 'nome': 'três'}]
             self.assertListEqual(expected, content)
+
+    def test_unzip_csv_content_with_non_string_content(self):
+        with patch('sc4py.zip.unzip_content', return_value=123):
+            self.assertEqual([], unzip_csv_content(b'ignored'))

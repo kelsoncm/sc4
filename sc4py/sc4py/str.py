@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 __author__ = 'Kelson da Costa Medeiros <kelsoncm@gmail.com>'
 
 
-def str2bool(v):
+def str2bool(v: str|bool|int|None) -> bool|None:
     TRUE_STRS = ('true', 'verdade', 'yes', 'sim', 't', 'v', 'y', 's', '1')
     FALSE_STRS = ('false', 'falso', 'no', 'nao', 'não', 'f', 'n', '0')
 
@@ -38,6 +38,6 @@ def str2bool(v):
         return v == 1
 
     if isinstance(v, str) and v.strip().lower() in TRUE_STRS + FALSE_STRS:
-        return v.lower() in TRUE_STRS
+        return v.strip().lower() in TRUE_STRS
 
     raise ValueError('Boolean value expected.')
