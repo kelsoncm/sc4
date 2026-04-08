@@ -3,8 +3,8 @@
 [![Python CI and PyPI Deploy](https://github.com/kelsoncm/sc4/actions/workflows/pythonapp.yml/badge.svg)](https://github.com/kelsoncm/sc4/actions/workflows/pythonapp.yml)
 ![PyPI - sc4py Version](https://img.shields.io/pypi/v/sc4py)
 ![PyPI - sc4net Version](https://img.shields.io/pypi/v/sc4net)
-[![Coverage - sc4py](https://codecov.io/gh/kelsoncm/sc4/graph/badge.svg?flag=sc4py)](https://codecov.io/gh/kelsoncm/sc4)
-[![Coverage - sc4net](https://codecov.io/gh/kelsoncm/sc4/graph/badge.svg?flag=sc4net)](https://codecov.io/gh/kelsoncm/sc4)
+[![Coverage - sc4py](https://codecov.io/gh/kelsoncm/sc4/branch/main/graph/badge.svg?flag=sc4py)](https://codecov.io/gh/kelsoncm/sc4)
+[![Coverage - sc4net](https://codecov.io/gh/kelsoncm/sc4/branch/main/graph/badge.svg?flag=sc4net)](https://codecov.io/gh/kelsoncm/sc4)
 
 Monorepo with two Python packages:
 
