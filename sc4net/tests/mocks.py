@@ -35,7 +35,7 @@ from pyftpdlib.servers import FTPServer
 FILE_NOT_FOUND_ERROR_MESSAGE = "File not found"
 
 
-dir_path = os.path.dirname(os.path.realpath(__file__)) + "/assets/"
+dir_path = os.path.realpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), "assets"))
 
 
 def mock_ftpd():
@@ -74,7 +74,11 @@ class MockHttpServerRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         parts = self.path.split("/")
         filepath = parts[len(parts) - 1]
-        full_file_name = dir_path + filepath
+        full_file_name = os.path.realpath(os.path.join(dir_path, filepath))
+
+        if os.path.commonpath([dir_path, full_file_name]) != dir_path:
+            self.send_error(404, FILE_NOT_FOUND_ERROR_MESSAGE)
+            return
 
         if not os.path.exists(full_file_name):
             self.send_error(404, FILE_NOT_FOUND_ERROR_MESSAGE)
