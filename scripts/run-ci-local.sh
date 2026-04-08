@@ -16,11 +16,11 @@ pushd "$ROOT_DIR" >/dev/null
 
 "$VENV_DIR/bin/black" . --check
 "$VENV_DIR/bin/isort" . --profile black --check-only
-"$VENV_DIR/bin/bandit" -r .
-"$VENV_DIR/bin/flake8" sc4py --count --select=E9,F63,F7,F82 --show-source --statistics
-"$VENV_DIR/bin/flake8" sc4py --count --max-complexity=10 --max-line-length=127 --statistics
-"$VENV_DIR/bin/flake8" sc4net --count --select=E9,F63,F7,F82 --show-source --statistics
-"$VENV_DIR/bin/flake8" sc4net --count --max-complexity=10 --max-line-length=127 --statistics
+"$VENV_DIR/bin/bandit" -r . --exclude "./.venv,./sc4py/.venv,./sc4net/.venv"
+"$VENV_DIR/bin/flake8" sc4py --exclude .venv --count --select=E9,F63,F7,F82 --show-source --statistics
+"$VENV_DIR/bin/flake8" sc4py --exclude .venv --count --max-complexity=10 --max-line-length=127 --statistics
+"$VENV_DIR/bin/flake8" sc4net --exclude .venv --count --select=E9,F63,F7,F82 --show-source --statistics
+"$VENV_DIR/bin/flake8" sc4net --exclude .venv --count --max-complexity=10 --max-line-length=127 --statistics
 "$VENV_DIR/bin/semgrep" --config p/ci
 
 if command -v shellcheck >/dev/null 2>&1; then
