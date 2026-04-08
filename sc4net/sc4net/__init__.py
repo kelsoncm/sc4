@@ -23,7 +23,7 @@ SOFTWARE.
 """
 
 import json
-from ftplib import FTP
+from ftplib import FTP  # nosec B402
 from http.client import HTTPException
 from io import BytesIO
 from typing import NoReturn, Optional, cast
@@ -53,6 +53,12 @@ def _merge_headers(headers):
     return result
 
 
+def _validate_web_url(url):
+    parsed = urlparse(url)
+    if parsed.scheme not in ("http", "https") or not parsed.netloc:
+        _raise_http_exception(400, "Only http/https URLs are allowed", url)
+
+
 def _ftp_get_with_stdlib(url, timeout=None) -> bytes:
     parsed = urlparse(url)
     host = parsed.hostname
@@ -67,7 +73,7 @@ def _ftp_get_with_stdlib(url, timeout=None) -> bytes:
         _raise_http_exception(400, "FTP file path is required", url)
 
     try:
-        with FTP() as ftp_client:
+        with FTP() as ftp_client:  # nosec B321
             if timeout is None:
                 ftp_client.connect(host=host, port=port)
             else:
@@ -81,9 +87,10 @@ def _ftp_get_with_stdlib(url, timeout=None) -> bytes:
 
 
 def _http_get_with_stdlib(url, headers=None, timeout=None) -> bytes:
+    _validate_web_url(url)
     request = Request(url, headers=_merge_headers(headers))
     try:
-        with urlopen(request, timeout=timeout) as response:
+        with urlopen(request, timeout=timeout) as response:  # nosec B310
             return response.read()
     except HTTPError as exc:
         _raise_http_exception(exc.code, exc.reason, url, dict(exc.headers or {}))
@@ -171,6 +178,7 @@ def post(
 ):
     timeout = kwargs.get("timeout")
     request_headers = _merge_headers(headers)
+    _validate_web_url(url)
 
     payload = None
     if json_data is not None:
@@ -191,7 +199,7 @@ def post(
 
     request = Request(url, data=payload, headers=request_headers, method="POST")
     try:
-        with urlopen(request, timeout=timeout) as response:
+        with urlopen(request, timeout=timeout) as response:  # nosec B310
             byte_array_content = response.read()
     except HTTPError as exc:
         _raise_http_exception(exc.code, exc.reason, url, dict(exc.headers or {}))
