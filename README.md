@@ -57,6 +57,6 @@ pre-commit run --all-files
 Notes:
 
 * The hook script creates `.venv` automatically if it does not exist.
-* It runs quality checks (black, isort, bandit, flake8, semgrep) 
+* It runs quality checks (black, isort, bandit, flake8, semgrep)
   and test suites for `sc4py` and `sc4net`.
 * If available, it also runs shellcheck and markdownlint.
