@@ -33,7 +33,6 @@ from urllib.request import Request, urlopen
 from zipfile import ZipFile
 from sc4py.zip import unzip_content, unzip_csv_content
 
-
 default_headers = {}
 
 
