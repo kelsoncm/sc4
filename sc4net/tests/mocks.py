@@ -76,7 +76,12 @@ class MockHttpServerRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         parts = self.path.split("/")
         filepath = parts[len(parts) - 1]
-        full_file_name = os.path.realpath(os.path.join(dir_path, filepath))
+        safe_filepath = os.path.basename(os.path.normpath(filepath))
+        if safe_filepath in ("", ".", ".."):
+            self.send_error(404, FILE_NOT_FOUND_ERROR_MESSAGE)
+            return
+
+        full_file_name = os.path.realpath(os.path.join(dir_path, safe_filepath))
 
         if os.path.commonpath([dir_path, full_file_name]) != dir_path:
             self.send_error(404, FILE_NOT_FOUND_ERROR_MESSAGE)
