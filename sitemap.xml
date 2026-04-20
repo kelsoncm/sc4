@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://kelsoncm.github.io/sc4/</loc>
+         <lastmod>2026-04-20</lastmod>
+    </url>
+    <url>
+         <loc>https://kelsoncm.github.io/sc4/api/choice/</loc>
+         <lastmod>2026-04-20</lastmod>
+    </url>
+    <url>
+         <loc>https://kelsoncm.github.io/sc4/api/datetime/</loc>
+         <lastmod>2026-04-20</lastmod>
+    </url>
+    <url>
+         <loc>https://kelsoncm.github.io/sc4/api/env/</loc>
+         <lastmod>2026-04-20</lastmod>
+    </url>
+    <url>
+         <loc>https://kelsoncm.github.io/sc4/api/klass/</loc>
+         <lastmod>2026-04-20</lastmod>
+    </url>
+    <url>
+         <loc>https://kelsoncm.github.io/sc4/api/number/</loc>
+         <lastmod>2026-04-20</lastmod>
+    </url>
+    <url>
+         <loc>https://kelsoncm.github.io/sc4/api/str/</loc>
+         <lastmod>2026-04-20</lastmod>
+    </url>
+    <url>
+         <loc>https://kelsoncm.github.io/sc4/api/zip/</loc>
+         <lastmod>2026-04-20</lastmod>
+    </url>
+</urlset>
