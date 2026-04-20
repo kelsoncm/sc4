@@ -9,9 +9,7 @@
 
 Utilities for date/time, environment parsing, dynamic class loading, percentages, string-to-bool conversion, choice tuples, and in-memory ZIP reading.
 
-## Package documentation
-
-* [sc4py/README](sc4py/README)
+> [Package documentation](https://kelsoncm.github.io/python-sc4py/)
 
 ## Installation
 
