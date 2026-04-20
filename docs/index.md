@@ -41,6 +41,7 @@ print(str2bool("sim"))                              # True
 
 for d in daterange(date(2026, 1, 1), date(2026, 1, 3)):
     print(d)
+
 # 2026-01-01
 # 2026-01-02
 # 2026-01-03
