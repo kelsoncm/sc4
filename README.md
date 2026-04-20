@@ -7,7 +7,6 @@
 [![PyPI Deploy](https://github.com/kelsoncm/python-sc4py/actions/workflows/publish.yml/badge.svg)](https://github.com/kelsoncm/python-sc4py/actions/workflows/publish.yml)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 
-
 Utilities for date/time, environment parsing, dynamic class loading, percentages, string-to-bool conversion, choice tuples, and in-memory ZIP reading.
 
 ## Package documentation
@@ -23,7 +22,6 @@ pip install sc4py
 ## Security
 
 Please report vulnerabilities according to [SECURITY.md](SECURITY.md).
-
 
 ## How to contribute
 
@@ -61,7 +59,7 @@ Hooks:
 * **pre-commit**: `black`, `isort`, `bandit`, `flake8` (with `flake8-bandit`)
 * **pre-push**:
   1. Runs `python -m pytest --cov=sc4py --cov-report=xml -q` to produce `coverage.xml`
-  2. Run [`pytest-coverage-gate`](https://github.com/kelsoncm/pytest-coverage-gate) reads
-     `coverage.xml`, compares against `.coverage-baseline` (2 decimal places), blocks
-     the push on regression and updates the baseline on improvement
+  2. [`pytest-coverage-gate`](https://github.com/kelsoncm/pytest-coverage-gate) reads
+     `coverage.xml`, compares against `.coverage-baseline`, blocks the push on
+     regression and updates the baseline on improvement
 * **GitHub Actions only**: `semgrep` SAST

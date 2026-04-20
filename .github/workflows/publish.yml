@@ -30,8 +30,8 @@ jobs:
 
       - name: Install quality dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install black isort bandit
+          python -m pip install --upgrade pip uv
+          uv pip install --upgrade -e ".[dev]"
 
       - name: Check Python formatting (black + isort)
         run: |
