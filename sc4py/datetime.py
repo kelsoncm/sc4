@@ -44,9 +44,7 @@ def others_months() -> list[int]:
     return [m for m in range(1, 13) if m != t]
 
 
-def daterange(
-    start: date, end: date, step: timedelta = timedelta(1)
-) -> Generator[date, None, None]:
+def daterange(start: date, end: date, step: timedelta = timedelta(1)) -> Generator[date, None, None]:
     curr = start
     while curr <= end:
         yield curr

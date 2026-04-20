@@ -1,9 +1,54 @@
 repos:
+  # ---------------------------------------------------------------------------
+  # Formatting  (pre-commit stage)
+  # ---------------------------------------------------------------------------
+  - repo: https://github.com/psf/black
+    rev: 25.1.0
+    hooks:
+      - id: black
+
+  - repo: https://github.com/PyCQA/isort
+    rev: 6.0.1
+    hooks:
+      - id: isort
+        args: ["--profile", "black"]
+
+  # ---------------------------------------------------------------------------
+  # Static analysis  (pre-commit stage)
+  # ---------------------------------------------------------------------------
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.8.3
+    hooks:
+      - id: bandit
+        args: ["-c", "pyproject.toml", "-r", "sc4py"]
+
+  - repo: https://github.com/PyCQA/flake8
+    rev: 7.2.0
+    hooks:
+      - id: flake8
+        args: ["sc4py", "--count", "--max-complexity=10", "--max-line-length=127", "--statistics"]
+        pass_filenames: false
+        additional_dependencies:
+          - flake8-bandit
+          - flake8-pyproject
+
+  # ---------------------------------------------------------------------------
+  # Tests + coverage regression guard  (pre-push stage)
+  # ---------------------------------------------------------------------------
   - repo: local
     hooks:
-      - id: ci-like-checks
-        name: Run CI-like quality and tests
-        entry: scripts/run-ci-local.sh
+      - id: run-tests
+        name: Run pytest with coverage
+        entry: python -m pytest --cov=sc4py --cov-report=xml:coverage.xml --cov-report=term-missing
         language: system
         pass_filenames: false
-        stages: [pre-commit]
+        stages: [pre-push]
+
+  - repo: https://github.com/kelsoncm/pytest-coverage-gate
+    rev: v1.0.3
+    hooks:
+      - id: pytest-coverage-gate
+        args:
+          - --coverage-xml=coverage.xml
+          - --baseline=.coverage-baseline
+        stages: [pre-push]

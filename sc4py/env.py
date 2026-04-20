@@ -31,12 +31,7 @@ from .str import str2bool
 
 def env(name: str, default=None, wrapped: bool = False) -> str | None:
     result = getenv(name, default)
-    if (
-        wrapped
-        and isinstance(result, str)
-        and result[0:1] == "'"
-        and result[-1:] == "'"
-    ):
+    if wrapped and isinstance(result, str) and result[0:1] == "'" and result[-1:] == "'":
         return result[1:-1]
     return result
 

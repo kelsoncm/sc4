@@ -63,29 +63,21 @@ class TestPythonBrfiedEnv(TestCase):
         self.assertListEqual([], env_as_list("DUMMY_ENV", []))
         self.assertListEqual(["a"], env_as_list("DUMMY_ENV", ["a"]))
         self.assertListEqual(["a", "b"], env_as_list("DUMMY_ENV", ["a", "b"]))
-        self.assertListEqual(
-            ["a", "b"], env_as_list("DUMMY_ENV", ["a", "b"], delimiter=";")
-        )
+        self.assertListEqual(["a", "b"], env_as_list("DUMMY_ENV", ["a", "b"], delimiter=";"))
         os.environ["ALIST"] = "c,d"
         self.assertListEqual(["c", "d"], env_as_list("ALIST", ["c", "d"]))
         os.environ["ALIST"] = "c;d"
-        self.assertListEqual(
-            ["c", "d"], env_as_list("ALIST", ["c", "d"], delimiter=";")
-        )
+        self.assertListEqual(["c", "d"], env_as_list("ALIST", ["c", "d"], delimiter=";"))
 
     def test_env_as_list__using_tuple(self):
         self.assertListEqual([], env_as_list("DUMMY_ENV", tuple()))
         self.assertListEqual(["a"], env_as_list("DUMMY_ENV", tuple("a")))
         self.assertListEqual(["a", "b"], env_as_list("DUMMY_ENV", ("a", "b")))
-        self.assertListEqual(
-            ["a", "b"], env_as_list("DUMMY_ENV", ("a", "b"), delimiter=";")
-        )
+        self.assertListEqual(["a", "b"], env_as_list("DUMMY_ENV", ("a", "b"), delimiter=";"))
         os.environ["ALIST"] = "c,d"
         self.assertListEqual(["c", "d"], env_as_list("ALIST", ("c", "d")))
         os.environ["ALIST"] = "c;d"
-        self.assertListEqual(
-            ["c", "d"], env_as_list("ALIST", ("c", "d"), delimiter=";")
-        )
+        self.assertListEqual(["c", "d"], env_as_list("ALIST", ("c", "d"), delimiter=";"))
 
     def test_env_as_list_of_maps(self):
         self.assertListEqual([], env_as_list_of_maps("DUMMY_ENV", "K"))
@@ -93,9 +85,7 @@ class TestPythonBrfiedEnv(TestCase):
         self.assertListEqual([], env_as_list_of_maps("DUMMY_ENV", "K", " "))
 
         self.assertListEqual([{"K": "a"}], env_as_list_of_maps("DUMMY_ENV", "K", "a"))
-        self.assertListEqual(
-            [{"K": "a"}, {"K": "b"}], env_as_list_of_maps("DUMMY_ENV", "K", "a,b")
-        )
+        self.assertListEqual([{"K": "a"}, {"K": "b"}], env_as_list_of_maps("DUMMY_ENV", "K", "a,b"))
 
         self.assertListEqual(
             [{"K": "a"}, {"K": "b"}],
@@ -118,9 +108,7 @@ class TestPythonBrfiedEnv(TestCase):
         self.assertEqual(0, env_as_int("DUMMY_ENV", 0))
 
     def test_env_as_json(self):
-        self.assertEqual(
-            {"full": "name"}, env_from_json("DUMMY_ENV", '{"full": "name"}')
-        )
+        self.assertEqual({"full": "name"}, env_from_json("DUMMY_ENV", '{"full": "name"}'))
         self.assertIsNone(env_from_json("DUMMY_ENV", None))
         self.assertRaises(json.decoder.JSONDecodeError, env_from_json, "DUMMY_ENV", "")
         os.environ["JSON"] = "'[]'"

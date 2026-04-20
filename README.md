@@ -1,62 +1,63 @@
-# sc4
+# sc4py
 
-[![Python CI and PyPI Deploy](https://github.com/kelsoncm/sc4/actions/workflows/pythonapp.yml/badge.svg)](https://github.com/kelsoncm/sc4/actions/workflows/pythonapp.yml)
-![PyPI - sc4py Version](https://img.shields.io/pypi/v/sc4py)
-![PyPI - sc4net Version](https://img.shields.io/pypi/v/sc4net)
-[![Coverage - sc4py](https://codecov.io/gh/kelsoncm/sc4/branch/main/graph/badge.svg?flag=sc4py)](https://codecov.io/gh/kelsoncm/sc4)
-[![Coverage - sc4net](https://codecov.io/gh/kelsoncm/sc4/branch/main/graph/badge.svg?flag=sc4net)](https://codecov.io/gh/kelsoncm/sc4)
+[![Publish](https://github.com/kelsoncm/sc4py/actions/workflows/pythonapp.yml/badge.svg)](https://github.com/kelsoncm/sc4py/actions/workflows/pythonapp.yml)
+![Version](https://img.shields.io/pypi/v/sc4py)
+[![Coverage](https://codecov.io/gh/kelsoncm/sc4py/branch/main/graph/badge.svg?flag=sc4py)](https://codecov.io/gh/kelsoncm/sc4py)
 
-Monorepo with two Python packages:
-
-* `sc4py` - Python utility helpers
-* `sc4net` - HTTP(S)/FTP network helpers
+Utilities for date/time, environment parsing, dynamic class loading, percentages, string-to-bool conversion, choice tuples, and in-memory ZIP reading.
 
 ## Package documentation
 
-* `sc4py`: [sc4py/README](sc4py/README)
-* `sc4net`: [sc4net/README](sc4net/README)
+* [sc4py/README](sc4py/README)
 
 ## Installation
 
-Install each package independently from PyPI:
-
 ```bash
 pip install sc4py
-pip install sc4net
 ```
 
 ## Security
 
 Please report vulnerabilities according to [SECURITY.md](SECURITY.md).
 
+
 ## How to contribute
 
 ```bash
-git clone git@github.com:kelsoncm/sc4.git ~/projetos/PESSOAL/sc4
-code ~/projetos/PESSOAL/sc4
+git clone git@github.com:kelsoncm/sc4.git ~/projetos/PESSOAL/sc4py
+code ~/projetos/PESSOAL/sc4py
 ```
 
 ## Pre-commit
 
-This repository provides a pre-commit hook that runs CI-like quality
-and test checks locally.
+This repository uses [pre-commit](https://pre-commit.com/) to run quality checks
+before each commit and coverage regression checks before each push.
 
 Setup:
 
 ```bash
-python3 -m pip install pre-commit
+python -m venv .venv
+.venv\bin\activate
+.\.venv\Scripts\Activate.ps1
+pip install --upgrade pip uv
+uv pip install --upgrade -e ".[dev]"
 pre-commit install
+pre-commit install --hook-type pre-push
 ```
 
 Run manually:
 
 ```bash
 pre-commit run --all-files
+pre-commit run --hook-stage pre-push --all-files
 ```
 
-Notes:
+Hooks:
 
-* The hook script creates `.venv` automatically if it does not exist.
-* It runs quality checks (black, isort, bandit, flake8, semgrep)
-  and test suites for `sc4py` and `sc4net`.
-* If available, it also runs shellcheck and markdownlint.
+* **pre-commit**: `black`, `isort`, `bandit`, `flake8` (with `flake8-bandit`)
+* **pre-push**:
+  1. Runs `python -m pytest --cov=sc4py --cov-report=xml -q` to produce `coverage.xml`
+  2. Run [`pytest-coverage-gate`](https://github.com/kelsoncm/pytest-coverage-gate) reads
+     `coverage.xml`, compares against `.coverage-baseline` (2 decimal places), blocks
+     the push on regression and updates the baseline on improvement
+* **GitHub Actions only**: `semgrep` SAST

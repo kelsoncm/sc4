@@ -5,7 +5,6 @@
 This repository contains two packages with independent releases:
 
 * sc4py
-* sc4net
 
 Security fixes are applied to the latest published version of each package.
 Older versions may not receive patches.

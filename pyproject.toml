@@ -1,0 +1,75 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sc4py"
+version = "1.1.5"
+description = "Python library specific brazilian validations"
+readme = "README.md"
+license = { file = "LICENSE.md" }
+authors = [{ name = "Kelson da Costa Medeiros", email = "kelsoncm@gmail.com" }]
+keywords = ["shortcuts", "python", "utils"]
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/kelsoncm/sc4py"
+"Bug Tracker" = "https://github.com/kelsoncm/sc4py/issues"
+Download = "https://github.com/kelsoncm/sc4py/releases/tag/sc4py-v0.1.5"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["sc4py*"]
+
+# ---------------------------------------------------------------------------
+# Black
+# ---------------------------------------------------------------------------
+[tool.black]
+line-length = 127
+
+# ---------------------------------------------------------------------------
+# isort
+# ---------------------------------------------------------------------------
+[tool.isort]
+profile = "black"
+line_length = 127
+
+# ---------------------------------------------------------------------------
+# Flake8  (requires flake8-pyproject to read this section)
+# ---------------------------------------------------------------------------
+[tool.flake8]
+max-line-length = 127
+max-complexity = 10
+exclude = [".venv", "__pycache__", "*.egg-info", "build", "dist"]
+extend-select = ["S"]   # flake8-bandit security checks
+
+# ---------------------------------------------------------------------------
+# Bandit
+# ---------------------------------------------------------------------------
+[tool.bandit]
+exclude_dirs = [".venv", "tests"]
+
+# ---------------------------------------------------------------------------
+# pytest
+# ---------------------------------------------------------------------------
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+# ---------------------------------------------------------------------------
+# Coverage
+# ---------------------------------------------------------------------------
+[tool.coverage.run]
+source = ["sc4py"]
+omit = ["tests/*"]
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+
+[project.optional-dependencies]
+dev = ["pytest", "pytest-cov", "pyftpdlib", "flake8", "flake8-bandit", "black", "isort", "bandit", "pre-commit", "pytest-coverage-gate"]
