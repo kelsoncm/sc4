@@ -1,11 +1,13 @@
 # sc4py
 
-[![PyPI](https://img.shields.io/pypi/v/sc4py)](https://pypi.org/project/sc4py/)
-[![CI](https://github.com/kelsoncm/sc4/actions/workflows/pythonapp.yml/badge.svg)](https://github.com/kelsoncm/sc4/actions/workflows/pythonapp.yml)
-[![Coverage](https://codecov.io/gh/kelsoncm/sc4/branch/main/graph/badge.svg?flag=sc4py)](https://codecov.io/gh/kelsoncm/sc4)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/kelsoncm/sc4/blob/main/LICENSE.txt)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python](https://img.shields.io/pypi/pyversions/sc4py.svg)](https://pypi.org/project/sc4py/)
+[![Tests](https://github.com/kelsoncm/python-sc4py/actions/workflows/test.yml/badge.svg)](https://github.com/kelsoncm/python-sc4py/actions/workflows/test.yml)
+[![Coverage](https://codecov.io/gh/kelsoncm/python-sc4py/branch/main/graph/badge.svg)](https://codecov.io/gh/kelsoncm/python-sc4py)
+[![PyPI Deploy](https://github.com/kelsoncm/python-sc4py/actions/workflows/publish.yml/badge.svg)](https://github.com/kelsoncm/python-sc4py/actions/workflows/publish.yml)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 
-Python utility helpers for everyday tasks.
+Utilities for date/time, environment parsing, dynamic class loading, percentages, string-to-bool conversion, choice tuples, and in-memory ZIP reading.
 
 ## Installation
 
