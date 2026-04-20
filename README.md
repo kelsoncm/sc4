@@ -1,6 +1,6 @@
 # sc4py
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/pypi/pyversions/sc4py.svg)](https://pypi.org/project/sc4py/)
 [![Tests](https://github.com/kelsoncm/python-sc4py/actions/workflows/publish.yml/badge.svg)](https://github.com/kelsoncm/python-sc4py/actions/workflows/publish.yml)
 [![Coverage](https://codecov.io/gh/kelsoncm/python-sc4py/branch/main/graph/badge.svg)](https://codecov.io/gh/kelsoncm/python-sc4py)
