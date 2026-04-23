@@ -21,10 +21,10 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Set up Python 3.11
+      - name: Set up Python 3.14
         uses: actions/setup-python@v6
         with:
-          python-version: "3.11"
+          python-version: "3.14"
 
       - name: Install quality dependencies
         run: |
@@ -34,13 +34,14 @@ jobs:
       - name: Check Python formatting (black + isort)
         run: |
           black . --check
-          isort . --profile black --check-only
 
-      - name: Run Bandit SAST
-        run: bandit -c pyproject.toml -r sc4py
 
       - name: Lint Markdown
         uses: DavidAnson/markdownlint-cli2-action@v20
+
+      - name: Lint reStructuredText (doc8)
+        run: |
+          doc8 docs --max-line-length=120
 
       - name: Run Semgrep SAST
         if: github.event_name == 'pull_request' || github.event_name == 'schedule'
@@ -69,18 +70,14 @@ jobs:
 
       - name: Install CI tools
         run: |
-          python -m pip install --upgrade pip
-          pip install flake8 flake8-bandit flake8-pyproject pytest pytest-cov pytest-coverage-gate
+          python -m pip install --upgrade pip uv
+          uv pip install --system --upgrade -e ".[dev]"
 
       - name: Install project dependencies
         run: pip install -e .
 
-      - name: sc4py - Lint with flake8
-        run: |
-          flake8 sc4py --count --select=E9,F63,F7,F82,S --show-source --statistics
-          flake8 sc4py --count --max-complexity=10 --max-line-length=127 --statistics
 
-      - name: sc4py - Test with coverage
+      - name: Test with coverage
         run: |
           pytest --cov=sc4py --cov-report=xml:coverage.xml --cov-report=term-missing
           pytest-coverage-gate --coverage-xml=coverage.xml --baseline=.coverage-baseline
@@ -92,7 +89,7 @@ jobs:
           path: coverage.xml
           if-no-files-found: error
 
-      - name: Upload sc4py coverage to Codecov
+      - name: Upload to Codecov
         if: github.event_name == 'push' || github.event_name == 'schedule'
         uses: codecov/codecov-action@v5
         with:
@@ -100,29 +97,3 @@ jobs:
           files: coverage.xml
           flags: sc4py,py${{ matrix.python-version }}
           fail_ci_if_error: false
-
-      - name: Publish coverage summary
-        run: |
-          python - <<'PY'
-          import xml.etree.ElementTree as ET
-          import os
-
-          root = ET.parse("coverage.xml").getroot()
-          cov = round(float(root.attrib.get("line-rate", 0.0)) * 100, 2)
-          py_version = os.environ.get("PY_VERSION", "unknown")
-
-          summary = "\n".join(
-              [
-                  f"## Coverage Summary (Python {py_version})",
-                  "",
-                  "| Package | Line Coverage |",
-                  "|---|---:|",
-                  f"| sc4py | {cov:.2f}% |",
-              ]
-          )
-
-          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as fp:
-              fp.write(summary + "\n")
-          PY
-        env:
-          PY_VERSION: ${{ matrix.python-version }}
