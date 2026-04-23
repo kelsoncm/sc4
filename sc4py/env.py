@@ -38,7 +38,7 @@ def env(name: str, default=None, wrapped: bool = False) -> str | None:
 
 def env_as_list(
     name: str,
-    default: str | list[str] = "",
+    default: str | list[str] | tuple[str, ...] = "",
     delimiter: str = ",",
     wrapped: bool = False,
 ) -> list[str] | None:
@@ -57,7 +57,7 @@ def env_as_list(
 def env_as_list_of_maps(
     name: str,
     key: str,
-    default: str | list[str] = "",
+    default: str | list[str] | tuple[str, ...] = "",
     delimiter: str = ",",
     wrapped: bool = False,
 ) -> list[dict] | None:
@@ -69,7 +69,7 @@ def env_as_bool(name: str, default=None, wrapped: bool = False) -> bool | None:
     return str2bool(env(name, default, wrapped))
 
 
-def env_from_json(key: str, default="", wrapped: bool = False) -> dict | list | None:
+def env_from_json(key: str, default: str | dict | list = "", wrapped: bool = False) -> dict | list | None:
     result = env(key, default, wrapped)
     return json.loads(result) if result is not None else result
 
