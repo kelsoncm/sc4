@@ -51,10 +51,10 @@ class TestPythonBrfiedChoice(TestCase):
         self.assertEqual([("x", "x"), (2, 2)], to_choice("x", 2))
 
     def test_to_choice_from_plain_enum_class(self):
-        self.assertEqual([(1, 1), (2, 2)], to_choice(PlainEnum))
+        self.assertEqual([(1, "PlainEnum.A"), (2, "PlainEnum.B")], to_choice(PlainEnum))
 
     def test_to_choice_from_described_enum_class(self):
-        self.assertEqual([(10, "ten"), (20, "twenty")], to_choice(DescribedEnum))
+        self.assertEqual([(10, "DescribedEnum.X"), (20, "DescribedEnum.Y")], to_choice(DescribedEnum))
 
     def test_to_choice_from_enum_item(self):
-        self.assertEqual([(10, "ten")], to_choice(DescribedEnum.X))
+        self.assertEqual([(10, "DescribedEnum.X")], to_choice(DescribedEnum.X))
