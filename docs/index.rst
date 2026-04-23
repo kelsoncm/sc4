@@ -85,4 +85,3 @@ Next steps
    :maxdepth: 1
 
    sc4py
-   modules
