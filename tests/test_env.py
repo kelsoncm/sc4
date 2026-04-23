@@ -79,6 +79,9 @@ class TestPythonBrfiedEnv(TestCase):
         os.environ["ALIST"] = "c;d"
         self.assertListEqual(["c", "d"], env_as_list("ALIST", ("c", "d"), delimiter=";"))
 
+    def test_env_as_list__using_invalid(self):
+        self.assertRaises(TypeError, env_as_list, "DUMMY_ENV", False)
+
     def test_env_as_list_of_maps(self):
         self.assertListEqual([], env_as_list_of_maps("DUMMY_ENV", "K"))
         self.assertListEqual([], env_as_list_of_maps("DUMMY_ENV", "K", ""))
