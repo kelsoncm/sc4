@@ -45,17 +45,17 @@ Installation
 Modules
 -------
 
-=================================== ===================================================================
-Module                              Purpose
-=================================== ===================================================================
-[`sc4py.choice`](api-choice.md)     Convert plain values and `Enum` types to Django-style choice tuples
-[`sc4py.datetime`](api-datetime.md) Date/time helpers and `daterange` generator
-[`sc4py.env`](api-env.md)           Type-safe environment variable reading
-[`sc4py.klass`](api-klass.md)       Dynamic class instantiation from dotted path strings
-[`sc4py.number`](api-number.md)     Percentage calculation
-[`sc4py.str`](api-str.md)           Multilingual boolean string parsing
-[`sc4py.zip`](api-zip.md)           In-memory ZIP extraction (text and CSV)
-=================================== ===================================================================
+================================ ===================================================================
+Module                           Purpose
+================================ ===================================================================
+[`sc4py.choice`](api-choice)     Convert plain values and `Enum` types to Django-style choice tuples
+[`sc4py.datetime`](api-datetime) Date/time helpers and `daterange` generator
+[`sc4py.env`](api-env)           Type-safe environment variable reading
+[`sc4py.klass`](api-klass)       Dynamic class instantiation from dotted path strings
+[`sc4py.number`](api-number)     Percentage calculation
+[`sc4py.str`](api-str)           Multilingual boolean string parsing
+[`sc4py.zip`](api-zip)           In-memory ZIP extraction (text and CSV)
+================================ ===================================================================
 
 Quick start
 -----------
@@ -79,6 +79,7 @@ Quick start
     # 2026-01-02
     # 2026-01-03
 
+
 Next steps
 ----------
 
@@ -86,10 +87,10 @@ Next steps
    :maxdepth: 1
 
    index
-   api-choice.md
-   api-datetime.md
-   api-env.md
-   api-klass.md
-   api-number.md
-   api-str.md
-   api-zip.md
+   api-choice
+   api-datetime
+   api-env
+   api-klass
+   api-number
+   api-str
+   api-zip
