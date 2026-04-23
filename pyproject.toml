@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -12,64 +12,55 @@ authors = [{ name = "Kelson da Costa Medeiros", email = "kelsoncm@gmail.com" }]
 keywords = ["shortcuts", "python", "utils"]
 requires-python = ">=3.10"
 classifiers = [
-    "Programming Language :: Python :: 3",
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pre-commit>=4.6.0",
+    "black>=26.3.1",
+    "ruff>=0.15.11",
+    "doc8>=2.0.0",
+    "pytest>=9.0.3",
+    "pytest-cov>=7.1.0",
+    "python-dotenv>=1.2.2",
+    "pytest-coverage-gate>=1.0.3",
+    "responses>=0.26.0",
 ]
 
 [project.urls]
 Homepage = "https://github.com/kelsoncm/sc4py"
 "Bug Tracker" = "https://github.com/kelsoncm/sc4py/issues"
-Download = "https://github.com/kelsoncm/sc4py/releases/tag/sc4py-v0.1.5"
+Download = "https://github.com/kelsoncm/sc4py/releases/"
+Docs = "https://kelsoncm.github.io/python-sc4py/"
 
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["sc4py*"]
 
-# ---------------------------------------------------------------------------
-# Black
-# ---------------------------------------------------------------------------
-[tool.black]
-line-length = 127
-
-# ---------------------------------------------------------------------------
-# isort
-# ---------------------------------------------------------------------------
-[tool.isort]
-profile = "black"
-line_length = 127
-
-# ---------------------------------------------------------------------------
-# Flake8  (requires flake8-pyproject to read this section)
-# ---------------------------------------------------------------------------
-[tool.flake8]
-max-line-length = 127
-max-complexity = 10
-exclude = [".venv", "__pycache__", "*.egg-info", "build", "dist"]
-extend-select = ["S"]   # flake8-bandit security checks
-
-# ---------------------------------------------------------------------------
-# Bandit
-# ---------------------------------------------------------------------------
-[tool.bandit]
-exclude_dirs = [".venv", "tests"]
-
-# ---------------------------------------------------------------------------
-# pytest
-# ---------------------------------------------------------------------------
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-
-# ---------------------------------------------------------------------------
-# Coverage
-# ---------------------------------------------------------------------------
 [tool.coverage.run]
-source = ["sc4py"]
-omit = ["tests/*"]
+source = ["pyfwf"]
+omit = ["tests/*", "sandbox/*"]
 
 [tool.coverage.report]
-precision = 2
+fail_under = 100
 show_missing = true
 
-[project.optional-dependencies]
-dev = ["pytest", "pytest-cov", "pyftpdlib", "flake8", "flake8-bandit", "black", "isort", "bandit", "pre-commit", "pytest-coverage-gate"]
+[tool.ruff]
+line-length = 120
+force-exclude = true
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "S"]
+
+[tool.black]
+line-length = 120
