@@ -1,54 +1,49 @@
 repos:
-  # ---------------------------------------------------------------------------
-  # Formatting  (pre-commit stage)
-  # ---------------------------------------------------------------------------
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+
   - repo: https://github.com/psf/black
-    rev: 25.1.0
+    rev: 26.3.1
     hooks:
       - id: black
 
-  - repo: https://github.com/PyCQA/isort
-    rev: 6.0.1
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.11
     hooks:
-      - id: isort
-        args: ["--profile", "black"]
+      - id: ruff
+        args: [--fix]
 
-  # ---------------------------------------------------------------------------
-  # Static analysis  (pre-commit stage)
-  # ---------------------------------------------------------------------------
-  - repo: https://github.com/PyCQA/bandit
-    rev: 1.8.3
+  - repo: https://github.com/PyCQA/doc8
+    rev: v2.0.0
     hooks:
-      - id: bandit
-        args: ["-c", "pyproject.toml", "-r", "sc4py"]
+      - id: doc8
+        args: ["--max-line-length=120"]
 
-  - repo: https://github.com/PyCQA/flake8
-    rev: 7.2.0
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.48.0
     hooks:
-      - id: flake8
-        args: ["sc4py", "--count", "--max-complexity=10", "--max-line-length=127", "--statistics"]
-        pass_filenames: false
-        additional_dependencies:
-          - flake8-bandit
-          - flake8-pyproject
+      - id: markdownlint
+        args: ["--fix"]
 
-  # ---------------------------------------------------------------------------
-  # Tests + coverage regression guard  (pre-push stage)
-  # ---------------------------------------------------------------------------
   - repo: local
     hooks:
-      - id: run-tests
-        name: Run pytest with coverage
-        entry: python -m pytest --cov=sc4py --cov-report=xml:coverage.xml --cov-report=term-missing
+      - id: pytest
+        name: pytest
+        stages: [pre-push]
         language: system
+        entry: pytest --cov=sc4py --cov-report=xml:coverage.xml --cov-report=term-missing
         pass_filenames: false
-        stages: [pre-push]
-
-  - repo: https://github.com/kelsoncm/pytest-coverage-gate
-    rev: v1.0.3
-    hooks:
+        always_run: true
       - id: pytest-coverage-gate
-        args:
-          - --coverage-xml=coverage.xml
-          - --baseline=.coverage-baseline
+        name: pytest-coverage-gate
         stages: [pre-push]
+        entry: python -m coverage_gate --coverage-xml=coverage.xml --baseline=.coverage-baseline
+        language: python
+        pass_filenames: false
+        always_run: true
+        additional_dependencies: ['pytest-coverage-gate>=1.0.3']
