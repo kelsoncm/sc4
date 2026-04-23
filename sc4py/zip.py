@@ -1,27 +1,3 @@
-"""
-The MIT License (MIT)
-
-Copyright (c) 2015 kelsoncm
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-"""
-
 from csv import DictReader
 from io import BytesIO, StringIO
 from zipfile import ZipFile
@@ -32,11 +8,24 @@ class FileNotFoundInZipError(FileNotFoundError):
 
 
 def unzip_content(content: bytes, file_id: int | str = 0, encoding: str = "utf-8") -> str | bytes:
+    """Descompacta o conteúdo de um arquivo zip e retorna o conteúdo do arquivo especificado por file_id.
+    Args:
+        - content (bytes): O conteúdo do arquivo zip em formato de bytes.
+        - file_id (int | str, optional): O índice ou nome do arquivo dentro do zip a ser descompactado.
+            Padrão é 0 (primeiro arquivo).
+        - encoding (str, optional): A codificação a ser usada para decodificar o conteúdo do arquivo.
+            Se None, retorna bytes. Padrão é "utf-8".
+    Returns:
+        str | bytes: O conteúdo do arquivo descompactado, decodificado como string se encoding for
+            especificado, ou como bytes se encoding for None.
+    Raises:
+        FileNotFoundInZipError: Se o arquivo especificado por file_id não for encontrado dentro do zip.
+    """
     with ZipFile(BytesIO(content)) as zip_file:
         try:
             filename = file_id if isinstance(file_id, str) else zip_file.filelist[int(file_id)].filename
         except IndexError:
-            raise FileNotFoundInZipError("Não existe arquivo no índice %d")
+            raise FileNotFoundInZipError("Não existe arquivo no índice %d" % file_id)
         try:
             with zip_file.open(filename) as zipped_file:
                 binary_file_content = zipped_file.read()
@@ -46,6 +35,18 @@ def unzip_content(content: bytes, file_id: int | str = 0, encoding: str = "utf-8
 
 
 def unzip_csv_content(content: bytes, file_id: int | str = 0, encoding: str = "utf-8", **kwargs) -> list[dict]:
+    """Descompacta o conteúdo de um arquivo zip, lê o conteúdo do arquivo CSV especificado por file_id e retorna
+    uma lista de dicionários representando as linhas do CSV.
+    Args:
+        - content (bytes): O conteúdo do arquivo zip em formato de bytes.
+        - file_id (int | str, optional): O índice ou nome do arquivo CSV dentro do zip a ser descompactado.
+            Padrão é 0 (primeiro arquivo).
+        - encoding (str, optional): A codificação a ser usada para decodificar o conteúdo do arquivo CSV.
+            Se None, retorna bytes. Padrão é "utf-8".
+        - **kwargs: Argumentos adicionais a serem passados para csv.DictReader (como delimiter, quotechar, etc.).
+    Returns:
+        list[dict]: Uma lista de dicionários representando as linhas do CSV.
+    """
     file_content = unzip_content(content, file_id, encoding)
     if not isinstance(file_content, str):
         file_content = file_content.decode(encoding) if isinstance(file_content, bytes) else str(file_content)
