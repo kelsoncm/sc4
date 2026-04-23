@@ -20,7 +20,7 @@ percentages, string-to-bool conversion, choice tuples, and in-memory ZIP reading
    :alt: QA
 
 .. image:: https://codecov.io/gh/kelsoncm/python-sc4py/branch/main/graph/badge.svg
-   :target: https://codecov.io/gh/kelsoncm/python-sc4py
+   :target: https://github.com/kelsoncm/python-sc4py
    :alt: Coverage
 
 .. image:: https://github.com/kelsoncm/python-sc4py/actions/workflows/publish.yml/badge.svg
@@ -39,29 +39,27 @@ percentages, string-to-bool conversion, choice tuples, and in-memory ZIP reading
 Installation
 ------------
 
-.. code-block::bash
+.. code-block:: bash
+
     pip install sc4py
 
 Modules
 -------
 
-================================ ===================================================================
-Module                           Purpose
-================================ ===================================================================
-[`sc4py.choice`](api-choice)     Convert plain values and `Enum` types to Django-style choice tuples
-[`sc4py.datetime`](api-datetime) Date/time helpers and `daterange` generator
-[`sc4py.env`](api-env)           Type-safe environment variable reading
-[`sc4py.klass`](api-klass)       Dynamic class instantiation from dotted path strings
-[`sc4py.number`](api-number)     Percentage calculation
-[`sc4py.str`](api-str)           Multilingual boolean string parsing
-[`sc4py.zip`](api-zip)           In-memory ZIP extraction (text and CSV)
-================================ ===================================================================
+* :doc:`sc4py.choice <sc4py.choice>` - Convert plain values and `Enum` types to Django-style choice tuples
+* :doc:`sc4py.datetime <sc4py.datetime>` - Date/time helpers and `daterange` generator
+* :doc:`sc4py.env <sc4py.env>` - Type-safe environment variable reading
+* :doc:`sc4py.klass <sc4py.klass>` - Dynamic class instantiation from dotted path strings
+* :doc:`sc4py.number <sc4py.number>` - Percentage calculation
+* :doc:`sc4py.str <sc4py.str>` - Multilingual boolean string parsing
+* :doc:`sc4py.zip <sc4py.zip>` - In-memory ZIP extraction (text and CSV)
 
 Quick start
 -----------
 
-.. code-block::python
-    from sc4py.datetime import now_str, daterange
+.. code-block:: python
+
+    from sc4py.datetime import now_str, range_date
     from sc4py.env import env_as_bool
     from sc4py.number import percentage
     from sc4py.str import str2bool
@@ -72,7 +70,7 @@ Quick start
     print(percentage(45, 60))                           # 75.0
     print(str2bool("sim"))                              # True
 
-    for d in daterange(date(2026, 1, 1), date(2026, 1, 3)):
+    for d in range_date(date(2026, 1, 1), date(2026, 1, 3)):
         print(d)
 
     # 2026-01-01
@@ -86,11 +84,5 @@ Next steps
 .. toctree::
    :maxdepth: 1
 
-   index
-   api-choice
-   api-datetime
-   api-env
-   api-klass
-   api-number
-   api-str
-   api-zip
+   sc4py
+   modules
