@@ -25,10 +25,16 @@ SOFTWARE.
 from datetime import date, timedelta
 from unittest import TestCase
 
-from sc4py.datetime import daterange, now, now_str, others_months, this_month, today
+from sc4py.datetime import daterange, now, now_str, others_months, this_month, this_year, today, today_str
 
 
 class TestPythonBrfiedDatetime(TestCase):
+
+    def test_this_year(self):
+        self.assertEqual(now().year, this_year())
+
+    def test_today_str(self):
+        self.assertEqual(date.today().strftime("%d-%m-%Y"), today_str())
 
     def test_today(self):
         self.assertEqual(date.today(), today())
