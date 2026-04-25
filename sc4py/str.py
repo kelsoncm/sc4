@@ -32,3 +32,8 @@ def str2bool(v: str | bool | int | None) -> bool | None:
         return v.strip().lower() in TRUE_STRS
 
     raise ValueError("Boolean value expected.")
+
+
+def only_digits(code: str) -> str:
+    """Removes all non-digit characters from the input string."""
+    return "".join(c for c in filter(str.isdigit, code))

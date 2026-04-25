@@ -24,10 +24,18 @@ SOFTWARE.
 
 from unittest import TestCase
 
-from sc4py.str import str2bool
+from sc4py.str import only_digits, str2bool
 
 
-class TestPythonBrfiedInit(TestCase):
+class TestOnlyDigits(TestCase):
+    def test_only_digits(self):
+        self.assertEqual(only_digits("abc123def456"), "123456")
+        self.assertEqual(only_digits("no digits here!"), "")
+        self.assertEqual(only_digits("2024-04-25"), "20240425")
+        self.assertEqual(only_digits("phone: (11) 91234-5678"), "11912345678")
+        self.assertEqual(only_digits(""), "")
+        self.assertEqual(only_digits("000abc"), "000")
+        self.assertEqual(only_digits("12.34,56"), "123456")
 
     def test_str2bool(self):
         self.assertTrue(str2bool(True))
