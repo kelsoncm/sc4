@@ -46,13 +46,13 @@ Installation
 Modules
 -------
 
-* :doc:`sc4py.choice <sc4py.choice>` - Convert plain values and `Enum` types to Django-style choice tuples
 * :doc:`sc4py.datetime <sc4py.datetime>` - Date/time helpers and `daterange` generator
 * :doc:`sc4py.env <sc4py.env>` - Type-safe environment variable reading
 * :doc:`sc4py.klass <sc4py.klass>` - Dynamic class instantiation from dotted path strings
 * :doc:`sc4py.number <sc4py.number>` - Percentage calculation
 * :doc:`sc4py.str <sc4py.str>` - Multilingual boolean string parsing
 * :doc:`sc4py.zip <sc4py.zip>` - In-memory ZIP extraction (text and CSV)
+* :doc:`sc4py.masks <sc4py.masks>` - String masking, validation and DV utilities (mod11)
 
 Quick start
 -----------

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sc4py"
-version = "1.1.7"
+version = "1.1.9"
 description = "Python library specific brazilian validations"
 readme = "README.md"
 license = { file = "LICENSE.md" }
@@ -48,7 +48,7 @@ where = ["."]
 include = ["sc4py*"]
 
 [tool.coverage.run]
-source = ["pyfwf"]
+source = ["sc4py"]
 omit = ["tests/*", "sandbox/*"]
 
 [tool.coverage.report]
